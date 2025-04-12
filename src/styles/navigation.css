@@ -15,17 +15,55 @@
 .nav-item svg {
     /* color: var(--icon-color); */ /* Раскомментируй, если нужно задать цвет иконок */
 }
-.nav-item span {
-   /* color: var(--main-text-color); */ /* Раскомментируй, если нужно задать цвет текста */
-}
   
-  .bottom-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    width: 100%;
-    max-width: 600px;
-  }
+/* Убедись, что эти стили есть в src/styles/navigation.css */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0; /* <<< Подбери точный цвет фона */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #333; /* <<< Подбери цвет текста */
+  font-size: 12px;
+  flex-grow: 1;
+  text-align: center;
+  padding: 5px; /* Для кликабельной области */
+}
+
+.nav-item img,
+.nav-item .icon-placeholder { /* Стиль для твоих иконок */
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  /* Если используешь плейсхолдер, добавь ему фон/рамку для видимости */
+  /* background-color: #ccc; */
+}
+
+.nav-item span {
+ /* Стиль для текста под иконкой */
+}
+
+/* Стиль для активного пункта меню */
+.nav-item.active {
+  color: #84cc16; /* <<< Пример яркого зеленого, подбери из Figma */
+  font-weight: bold; /* Можно добавить жирность */
+}
   
   .nav-link {
     text-decoration: none;

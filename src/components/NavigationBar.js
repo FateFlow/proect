@@ -17,12 +17,6 @@ const NavigationBar = ({ onOpenModal }) => {
           <img src="/icons/account.svg" alt="Account" />
           <span>Account</span>
         </Link>
-
-        {/* Центральная кнопка для добавления расхода */}
-        <button className="add-spend-button" onClick={onOpenModal}>
-          <img src="/icons/add.svg" alt="Add" />
-        </button>
-
         <Link to="/report" className={`nav-link ${location.pathname === '/report' ? 'active' : ''}`}>
           <img src="/icons/report.svg" alt="Report" />
           <span>Report</span>
