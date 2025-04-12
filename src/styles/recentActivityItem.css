@@ -1,0 +1,62 @@
+/* В src/styles/recentActivityItem.css */
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    background-color: #2C2C2E; /* Фон элемента списка */
+    padding: 12px var(--container-padding); /* Отступы внутри элемента */
+    border-radius: var(--border-radius-medium);
+    gap: 12px; /* Расстояние между иконкой, текстом и суммой */
+  }
+  
+  .activity-item-icon {
+    flex-shrink: 0; /* Иконка не должна сжиматься */
+    /* Стили для контейнера иконки, если нужны */
+  }
+  
+  /* Стили для реальных SVG иконок в списке, если понадобятся */
+  /*
+  .activity-item-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+  */
+  
+  .activity-item-details {
+    flex-grow: 1; /* Занимает все доступное пространство */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Обрезать длинный текст */
+  }
+  
+  .activity-item-description {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-color);
+    white-space: nowrap; /* Не переносить текст */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Добавить троеточие для длинного текста */
+  }
+  
+  .activity-item-category {
+    font-size: 0.8rem;
+    color: var(--secondary-text-color); /* Серый цвет для категории */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .activity-item-amount {
+    font-size: 1rem;
+    font-weight: 500;
+    flex-shrink: 0; /* Сумма не должна сжиматься */
+    white-space: nowrap; /* Не переносить сумму */
+  }
+  
+  .activity-item-amount.expense {
+    color: var(--text-color); /* Расходы - белым */
+  }
+  
+  .activity-item-amount.income {
+    color: var(--button-bills-bg); /* Доходы - зеленым (как кнопка Bills) */
+  }

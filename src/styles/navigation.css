@@ -1,13 +1,23 @@
 /* src/styles/navigation.css */
-.navigation-bar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: var(--secondary-color);
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-  }
+
+.navigation-bar { /* Или какой у тебя класс для навбара */
+  /* ... твои существующие стили для display, align-items и т.д. ... */
+  background-color: var(--navbar-bg); /* Новый фон */
+  border-top: 1px solid rgba(0, 0, 0, 0.1); /* Тонкая граница сверху, если нужно */
+  padding: 5px 0; /* Небольшие отступы сверху/снизу */
+  position: sticky; /* Или fixed, в зависимости от твоего layout */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* Убедись, что цвет иконок и текста в навбаре остался прежним или задан явно */
+.nav-item svg {
+    /* color: var(--icon-color); */ /* Раскомментируй, если нужно задать цвет иконок */
+}
+.nav-item span {
+   /* color: var(--main-text-color); */ /* Раскомментируй, если нужно задать цвет текста */
+}
   
   .bottom-nav {
     display: flex;
