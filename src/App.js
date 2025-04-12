@@ -69,6 +69,10 @@ function App() {
                                         onAddAmountToBalance={handleAddAmountToBalance}
                                      />}
                         />
+                        <Route
+                            path="/report"
+                            element={<ReportPage transactions={transactions} />} // <<< ПЕРЕДАЕМ ПРОПС
+                        />
                         <Route path="/history" element={<HistoryPage transactions={transactions} />} />
                         <Route path="/account" element={<AccountPage />} />
                         <Route path="/report" element={<ReportPage />} />

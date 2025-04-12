@@ -1,10 +1,175 @@
 /* src/styles/accountPage.css */
-.page {
-    padding: 20px;
+@import './variables.css'; /* <<< Убедись, что этот импорт первый и файл variables.css существует и корректен */
+
+.account-page-container {
+  /* Отступ сверху, по бокам из переменной, снизу */
+  padding: 60px var(--content-padding) 20px var(--content-padding);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрируем всё содержимое по горизонтали */
+  min-height: calc(100vh - var(--bottom-nav-height) - 80px); /* Чтобы контент занимал место */
+  box-sizing: border-box;
+}
+
+/* --- Секция Профиля --- */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 50px; /* Отступ под профилем */
+}
+
+.avatar-container {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: var(--light-gray-bg); /* Фон аватара */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar-icon {
+  color: #bdc3c7; /* Цвет иконки */
+  width: 65%;
+  height: 65%;
+}
+
+.edit-avatar-btn {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background-color: var(--white-bg);
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  color: var(--dark-text);
+}
+.edit-avatar-btn:hover {
+  background-color: #f8f9fa;
+}
+.edit-avatar-btn svg { /* Стиль для иконки внутри кнопки */
+    width: 14px;
+    height: 14px;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--dark-text);
+  margin: 0 0 6px 0;
+}
+
+.user-email,
+.user-phone {
+  font-size: 14px;
+  color: var(--medium-text);
+  margin: 2px 0;
+  line-height: 1.4;
+}
+
+/* --- Секция списка действий --- */
+.action-list {
+  width: 100%;
+  max-width: 400px; /* Ограничение ширины на больших экранах */
+  /* Боковые отступы для списка */
+  padding-left: 20px;
+  padding-right: 10px;
+  box-sizing: border-box; /* Учитываем padding в ширине */
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 0; /* Только вертикальный padding */
+  margin-bottom: 18px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+.action-item:hover {
+   background-color: rgba(0,0,0,0.03);
+}
+
+.action-item-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 16px;
+  flex-shrink: 0; /* Не сжиматься */
+}
+
+.action-item-icon-wrapper.settings,
+.action-item-icon-wrapper.support {
+    background-color: var(--primary-green);
+}
+
+.action-item-icon {
+  color: var(--dark-text); /* Цвет иконки внутри круга */
+}
+
+.action-item-text {
+  flex-grow: 1; /* Занимать доступное место */
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--dark-text);
+}
+
+.action-item-arrow {
+  color: var(--medium-text);
+  margin-left: 15px;
+  flex-shrink: 0; /* Не сжиматься */
+}
+
+/* --- Общие стили для Модальных Окон --- */
+/* Используем стили из expenseModal.css как основу */
+/* Если нужны специфичные стили, можно добавить классы */
+
+.modal-title {
     text-align: center;
-  }
-  
-  .theme-toggle {
-    margin: 20px 0;
-  }
-  
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: var(--dark-text);
+}
+
+.modal-basic-content {
+    font-size: 15px;
+    color: var(--medium-text);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-button {
+    background-color: var(--primary-purple);
+    color: var(--white-text);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius-medium);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 15px;
+    transition: background-color 0.2s ease;
+}
+.modal-button:hover {
+    background-color: #9333ea;
+}

@@ -14,22 +14,22 @@ body {
   background-color: #f9fafb;
   color: var(--dark-text);
   /* --- ВАЖНО: Отступ снизу для панели навигации --- */
-  padding-bottom: calc(var(--bottom-nav-height) + 15px); /* Высота панели + небольшой запас */
+  /* padding-bottom: calc(var(--bottom-nav-height) + 15px);  Высота панели + небольшой запас */
 }
 
-.app-container {
-  /* Стили для общего контейнера, если нужен */
-}
+/* src/styles/global.css */
 
-main.main-content {
-  /* Стили для тега <main>, если нужны */
-}
+/* ... другие стили ... */
 
 /* Убираем стрелки у input number */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none; margin: 0;
+  -webkit-appearance: none; /* Для старых WebKit */
+  margin: 0;
 }
-input[type=number] { -moz-appearance: textfield; }
+input[type=number] {
+  -moz-appearance: textfield; /* Для старых Firefox */
+  appearance: none; /* <<< СТАНДАРТНОЕ СВОЙСТВО ДОБАВЛЕНО */
+}
 
-button { cursor: pointer; font-family: inherit; }
+/* ... остальные стили ... */

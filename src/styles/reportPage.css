@@ -1,6 +1,96 @@
 /* src/styles/reportPage.css */
-.page {
-    padding: 20px;
-    text-align: center;
-  }
-  
+@import './variables.css';
+
+.report-page-container {
+  /* Зеленый фон для всей страницы */
+  background-color: var(--primary-green);
+  /* Занимаем минимум всю высоту экрана */
+  min-height: 100vh;
+  /* Отступ сверху перед белой карточкой */
+  padding-top: 30px;
+  /* --- ВАЖНО: Боковые отступы задаем ЗДЕСЬ --- */
+  padding-left: 20px;  /* Твой отступ слева */
+  padding-right: 20px; /* Твой отступ справа */
+  /* --- ВАЖНО: Нижний отступ ПОД карточкой, НАД навбаром --- */
+  /* padding-bottom = высота навбара + желаемый зазор */
+  padding-bottom: calc(var(--bottom-nav-height) + 15px); /* Примерно 65px + 15px = 80px */
+  /* --- ВАЖНО: Убедимся, что box-sizing применен --- */
+  box-sizing: border-box;
+  /* --- Убираем flex, он здесь не нужен --- */
+  /* display: flex; */
+  /* flex-direction: column; */
+}
+
+/* Псевдо-хедер не нужен */
+.report-header-placeholder { display: none; }
+
+/* Контейнер для основного контента (Белая карточка) */
+.report-content-container {
+  /* --- Убираем flex-grow --- */
+  /* flex-grow: 1; */
+  background-color: var(--white-bg);
+  /* --- Скругляем ВСЕ углы --- */
+  border-radius: var(--border-radius-large);
+  /* --- Убираем боковые MARGIN --- */
+  /* margin-left: 20px; */
+  /* margin-right: 20px; */
+  /* --- Убираем верхний и нижний margin --- */
+  margin-top: 0;
+  margin-bottom: 0; /* Отступ создается padding'ом родителя */
+
+  padding: 20px; /* Внутренние отступы */
+  position: relative;
+  z-index: 10;
+  box-shadow: var(--card-shadow);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* --- Убираем max-height, пусть растет по контенту --- */
+  /* max-height: calc(100vh - 30px - var(--content-padding) - var(--bottom-nav-height)); */
+  /* --- Можно задать минимальную высоту, если нужно --- */
+  min-height: 400px; /* Чтобы карточка не была слишком маленькой без контента */
+}
+
+/* Заголовок/Переключатель секции */
+.report-section-header {
+    display: flex; justify-content: flex-end; margin-bottom: 15px;
+    background-color: var(--light-gray-bg); border-radius: var(--border-radius-medium);
+    padding: 4px; margin-left: auto; flex-shrink: 0;
+}
+.report-type-btn {
+    background: none; border: none; padding: 6px 8px; font-size: 16px; cursor: pointer;
+    border-radius: calc(var(--border-radius-medium) - 4px);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: var(--medium-text); display: flex; align-items: center; justify-content: center;
+}
+.report-type-btn svg { display: block; }
+.report-type-btn.active {
+    background-color: var(--white-bg); color: var(--dark-text);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Контейнер для графика */
+.chart-container {
+  height: 250px; margin-bottom: 30px; position: relative; flex-shrink: 0;
+}
+
+/* Список категорий */
+.category-summary-list {
+  width: 100%;
+  flex-grow: 1; /* Занимает оставшееся место ВНУТРИ карточки */
+  overflow-y: auto;
+  padding-bottom: 0px; /* Нижний отступ не нужен, т.к. есть padding у родителя */
+}
+
+/* Стили для элементов списка категорий */
+.category-summary-item { margin-bottom: 18px; }
+.category-info { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.category-name { font-size: 14px; font-weight: 500; color: var(--dark-text); }
+.category-amount { font-size: 13px; font-weight: 500; color: var(--medium-text); }
+.category-progress-bar-bg { width: 100%; height: 8px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.category-progress-bar-fg { height: 100%; border-radius: 4px; transition: width 0.5s ease-out; }
+
+/* Сообщение об отсутствии данных */
+.no-data-message { text-align: center; color: var(--medium-text); font-size: 14px; padding: 20px; }
+.chart-container .no-data-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
