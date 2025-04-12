@@ -1,128 +1,81 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Стили
-import './styles/global.css'; // Подключаем глобальные стили
-
-// Компоненты и Страницы
+import './styles/global.css';
 import NavigationBar from './components/NavigationBar';
 import MainPage from './pages/MainPage';
 import AccountPage from './pages/AccountPage';
 import HistoryPage from './pages/HistoryPage';
 import ReportPage from './pages/ReportPage';
 import PlanPage from './pages/PlanPage';
-// import BillsPage from './pages/BillsPage'; // Если есть
+// import BillsPage from './pages/BillsPage';
 
 function App() {
-    // --- СОСТОЯНИЕ ПРИЛОЖЕНИЯ ---
-
-    // Состояние баланса
     const [currentBalance, setCurrentBalance] = useState(() => {
         const savedBalance = localStorage.getItem('currentBalance');
-        // Используем 783.81 как начальное значение по умолчанию
         return savedBalance ? parseFloat(savedBalance) : 783.81;
     });
-
-    // Состояние транзакций
     const [transactions, setTransactions] = useState(() => {
         const savedTransactions = localStorage.getItem('transactions');
         return savedTransactions ? JSON.parse(savedTransactions) : [];
     });
 
-    // --- ЭФФЕКТЫ ДЛЯ LOCALSTORAGE ---
+    // Состояние для модального окна добавления баланса
+    const [isAddBalanceModalOpen, setIsAddBalanceModalOpen] = useState(false);
 
-    // Сохраняем баланс при его изменении
-    useEffect(() => {
-        localStorage.setItem('currentBalance', currentBalance.toFixed(2));
-    }, [currentBalance]);
+    // Сохранение в localStorage
+    useEffect(() => { localStorage.setItem('currentBalance', currentBalance.toFixed(2)); }, [currentBalance]);
+    useEffect(() => { localStorage.setItem('transactions', JSON.stringify(transactions)); }, [transactions]);
 
-    // Сохраняем транзакции при их изменении
-    useEffect(() => {
-        localStorage.setItem('transactions', JSON.stringify(transactions));
-    }, [transactions]);
-
-    // --- ОБРАБОТЧИКИ ДЕЙСТВИЙ ---
-
-    // Обработчик добавления расхода (вызывается из MainPage -> ExpenseModal)
+    // Добавление расхода
     const handleAddExpense = (expenseData) => {
-        // 1. Создаем объект новой транзакции
-        const newTransaction = {
-            id: Date.now(), // Уникальный ID на основе времени
-            type: 'expense',
-            amount: expenseData.amount,
-            category: expenseData.category,
-            date: new Date().toISOString() // Сохраняем дату в стандартном формате
-        };
-
-        // 2. Обновляем список транзакций (добавляем новую в начало)
+        const newTransaction = { id: Date.now(), type: 'expense', amount: expenseData.amount, category: expenseData.category, date: new Date().toISOString() };
         setTransactions(prevTransactions => [newTransaction, ...prevTransactions]);
-
-        // 3. Обновляем баланс (вычитаем расход)
         setCurrentBalance(prevBalance => prevBalance - expenseData.amount);
     };
 
-    // Обработчик редактирования баланса (вызывается из MainPage)
-    const handleEditBalance = () => {
-        const input = prompt("Enter new total balance:", currentBalance.toFixed(2));
-        if (input !== null) { // Если пользователь не нажал "Отмена"
-            // Заменяем запятую на точку и преобразуем в число
-            const newBalance = parseFloat(input.replace(',', '.'));
-            // Проверяем, что введено корректное неотрицательное число
-            if (!isNaN(newBalance) && newBalance >= 0) {
-                // Опционально: можно добавить транзакцию "корректировка баланса"
-                // const difference = newBalance - currentBalance;
-                // if (Math.abs(difference) > 0.01) { ... }
-
-                // Устанавливаем новый баланс
-                setCurrentBalance(newBalance);
-            } else {
-                alert("Invalid amount entered. Please enter a non-negative number.");
-            }
-        }
+    // Открытие модалки добавления баланса
+    const handleOpenAddBalanceModal = () => {
+        setIsAddBalanceModalOpen(true);
+    };
+    // Закрытие модалки добавления баланса
+    const handleCloseAddBalanceModal = () => {
+        setIsAddBalanceModalOpen(false);
     };
 
-    // --- РЕНДЕР КОМПОНЕНТА ---
+    // Добавление суммы к балансу
+    const handleAddAmountToBalance = (amountToAdd) => {
+        setCurrentBalance(prevBalance => prevBalance + amountToAdd);
+        // Опционально: добавить транзакцию 'income'
+        const adjustmentTransaction = { id: Date.now(), type: 'income', amount: amountToAdd, category: 'Balance Top-up', date: new Date().toISOString() };
+        setTransactions(prev => [adjustmentTransaction, ...prev]);
+        handleCloseAddBalanceModal(); // Закрываем модалку
+    };
+
     return (
         <Router>
-            {/* Общий контейнер, которому задан padding-bottom в global.css */}
             <div className="app-container">
-                {/* Основная часть контента */}
                 <main className="main-content">
-                    {/* Система роутинга */}
                     <Routes>
-                        {/* Главная страница */}
                         <Route
                             path="/"
-                            element={
-                                <MainPage
-                                    // Передаем нужные данные и функции в MainPage
-                                    currentBalance={currentBalance}
-                                    onEditBalance={handleEditBalance} // Функция для кнопки Edit
-                                    onAddExpense={handleAddExpense}   // Функция для добавления расхода
-                                />
-                            }
+                            element={<MainPage
+                                        currentBalance={currentBalance}
+                                        onEditBalance={handleOpenAddBalanceModal} // Передаем функцию ОТКРЫТИЯ
+                                        onAddExpense={handleAddExpense}
+                                        // Пропсы для новой модалки
+                                        isAddBalanceModalOpen={isAddBalanceModalOpen}
+                                        onCloseAddBalanceModal={handleCloseAddBalanceModal}
+                                        onAddAmountToBalance={handleAddAmountToBalance}
+                                     />}
                         />
-                        {/* Страница истории */}
-                        <Route
-                            path="/history"
-                            element={
-                                // Передаем список транзакций в HistoryPage
-                                <HistoryPage transactions={transactions} />
-                             }
-                        />
-                        {/* Другие страницы */}
+                        <Route path="/history" element={<HistoryPage transactions={transactions} />} />
                         <Route path="/account" element={<AccountPage />} />
                         <Route path="/report" element={<ReportPage />} />
                         <Route path="/plan" element={<PlanPage />} />
                         {/* <Route path="/bills" element={<BillsPage />} /> */}
-
-                        {/* Можно добавить роут для страницы 404 */}
-                        {/* <Route path="*" element={ <NotFoundPage /> } /> */}
                     </Routes>
                 </main>
-
-                {/* Нижняя панель навигации (отображается на всех страницах) */}
                 <NavigationBar />
             </div>
         </Router>

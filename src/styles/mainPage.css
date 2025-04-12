@@ -1,235 +1,122 @@
 /* src/styles/mainPage.css */
+@import './variables.css';
 
-/* Убираем стандартные отступы */
-body {
-  margin: 0;
-  /* Можно задать глобальный фон, если нужно */
-  /* background-color: #f0f0f0; */
-}
-
-.main-page-layout {
+/* --- Контейнер всей страницы --- */
+.main-page-container {
+  min-height: calc(100vh - var(--bottom-nav-height));
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 60px); /* Высота экрана минус высота навбара (подбери высоту навбара) */
-  background-color: var(--primary-bg); /* Белый фон по умолчанию под всеми блоками */
-  color: var(--main-text-color); /* Ставим основной цвет текста */
-}
-
-/* --- Верхний зеленый блок --- */
-.top-balance-section {
-  background-color: var(--accent-green);
-  color: var(--main-text-color); /* Текст на зеленом фоне */
-  padding: 30px var(--container-padding) 60px; /* Больший отступ снизу для наложения */
-  text-align: center;
-  position: relative; /* Для позиционирования кнопки Edit */
-}
-
-.balance-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.balance-amount {
-  font-size: 2.5rem; /* Крупный шрифт для баланса */
-  font-weight: 700;
-  margin: 0 0 15px 0; /* Убираем верхний, добавляем нижний отступ */
-}
-
-.edit-button {
-  background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый */
-  border: 1px solid var(--main-text-color);
-  color: var(--main-text-color);
-  padding: 5px 15px;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.edit-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-
-/* --- Основной контент --- */
-.main-content-area {
-  flex-grow: 1; /* Занимает оставшееся пространство */
-  background-color: var(--primary-bg); /* Белый фон */
-  border-top-left-radius: var(--border-radius-large); /* Скругление сверху */
-  border-top-right-radius: var(--border-radius-large);
-  margin-top: -35px; /* Отрицательный отступ, чтобы наехать на зеленый блок */
-  position: relative; /* Чтобы z-index работал */
-  z-index: 1;
-  padding: var(--container-padding);
-  padding-top: 55px; /* Доп. отступ сверху из-за кнопки "+" */
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* Пространство между блоком кнопок и блоком сбережений */
-}
-
-/* --- Блок кнопок действий (Белый внутри белого) --- */
-.action-buttons-container {
-  display: flex;
-  align-items: flex-start; /* Выравниваем по верху, т.к. центральная кнопка больше */
-  justify-content: space-around;
-  position: relative; /* Для позиционирования центральной кнопки */
-  background-color: var(--primary-bg); /* Белый фон самого блока */
-  box-shadow: var(--card-shadow); /* Тень */
-  border-radius: var(--border-radius-large); /* Скругление */
-  padding: 15px; /* Внутренние отступы */
-  margin: 0 auto; /* Центрируем блок */
-  width: calc(100% - 2 * var(--container-padding)); /* Ширина с учетом отступов родителя */
-  margin-top: -50px; /* Поднимаем блок кнопок выше */
-  z-index: 2; /* Выше основного белого фона */
-}
-
-.action-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 5px; /* Расстояние между иконкой и текстом */
-  font-size: 0.8rem;
-  color: var(--main-text-color);
-  width: 60px; /* Примерная ширина боковых кнопок */
-}
-
-.action-button svg {
-    width: 24px;
-    height: 24px;
-    color: var(--icon-color); /* Применяем цвет иконок */
-}
-
-/* Центральная кнопка "+" */
-.action-button-center {
-  background-color: var(--accent-purple);
-  border: none;
-  border-radius: 50%;
-  width: 60px; /* Размер круглой кнопки */
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Тень для эффекта поднятия */
-  position: absolute; /* Абсолютное позиционирование */
-  left: 50%;
-  top: -30px; /* Выдвигаем кнопку вверх */
-  transform: translateX(-50%); /* Центрируем точно */
-  z-index: 3; /* Выше всех */
-}
-
-.action-button-center svg {
-  width: 32px; /* Размер плюса */
-  height: 32px;
-  color: #FFFFFF; /* Белый плюс */
-}
-
-/* Убираем текст у центральной кнопки, если он не нужен */
-.action-button-center span {
-  display: none;
-}
-
-/* --- Блок Сбережений (Серый) --- */
-.savings-card {
-  background-color: var(--secondary-bg); /* Серый фон */
-  border-radius: var(--border-radius-large);
-  box-shadow: var(--card-shadow); /* Тень */
-  padding: var(--container-padding);
-  color: var(--main-text-color);
-}
-
-.savings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.savings-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.savings-edit-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem; /* Размер точек */
-    line-height: 1;
-    padding: 0 5px;
-    color: var(--main-text-color);
-    cursor: pointer;
-}
-
-
-.savings-description {
-  font-size: 0.9rem;
-  color: #555; /* Чуть темнее серого текста */
-  margin: 0 0 20px 0; /* Отступ снизу */
-  max-width: 60%; /* Ограничиваем ширину текста */
-}
-
-.savings-progress-area {
-  display: flex;
-  align-items: flex-end; /* Выравниваем элементы по низу */
-  justify-content: space-between; /* Разносим картинку (которой нет) и прогресс-бар */
-  gap: 20px;
-  /* Если картинка была бы, она была бы слева */
-}
-
-/* Контейнер для прогресс-бара и лейблов */
-.progress-bar-container {
-  display: flex;
-  align-items: flex-end; /* Выравниваем по низу */
-  gap: 15px; /* Расстояние между баром и лейблами */
-  width: 100px; /* Ширина для прогресс-бара и лейблов справа */
-  margin-left: auto; /* Прижимаем вправо (если бы слева была картинка) */
-}
-
-.progress-bar-track {
-  width: 25px; /* Ширина полосы прогресса */
-  height: 120px; /* Высота полосы прогресса */
-  background-color: #D0D0D5; /* Цвет фона трека */
-  border-radius: 12px;
+  /* --- ВАЖНО: Для абсолютного позиционирования дочерних элементов --- */
   position: relative;
-  overflow: hidden; /* Скрыть выходящую за пределы часть */
-  display: flex; /* Чтобы выровнять fill по низу */
-  align-items: flex-end;
 }
 
-.progress-bar-fill {
-  background-color: var(--accent-purple); /* Фиолетовый цвет заполнения */
-  width: 100%;
+/* --- Секция Баланса (Зеленый фон) --- */
+.balance-section {
+  background-color: var(--primary-green);
+  min-height: 58vh; /* Высота зеленой зоны */
+  padding: 30px var(--content-padding) 20px var(--content-padding);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center; color: var(--balance-text);
+  border-radius: 0;
+  /* --- Убираем position: relative отсюда --- */
+  z-index: 5; /* Под карточками */
+}
+.balance-section span { font-size: 14px; font-weight: 500; opacity: 0.9; display: block; margin-bottom: 4px; }
+.balance-section h1 { font-size: 2.8em; margin: 0 0 18px 0; font-weight: 700; letter-spacing: -0.5px; }
+.balance-section .edit-balance-btn {
+  background-color: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 16px; padding: 6px 18px; font-size: 12px;
+  font-weight: 500; color: var(--balance-text); transition: background-color 0.2s ease;
+}
+.balance-section .edit-balance-btn:hover { background-color: rgba(0, 0, 0, 0.1); }
+
+/* --- Секция кнопок действий (АБСОЛЮТНОЕ ПОЗИЦИОНИРОВАНИЕ) --- */
+.action-buttons {
+  /* --- ВАЖНО: Позиционирование --- */
   position: absolute;
-  bottom: 0;
-  left: 0;
-  border-radius: 12px; /* Скругление и для заполнения */
-  transition: height 0.5s ease-out; /* Плавная анимация высоты */
+  top: 58vh; /* Располагаем верхний край на уровне низа зеленой секции */
+  transform: translateY(-50%); /* Сдвигаем ВВЕРХ на половину своей высоты */
+  left: 25px;  /* Отступ слева */
+  right: 25px; /* Отступ справа */
+  width: auto;  /* Ширина определяется отступами */
+  z-index: 15; /* Выше серого фона и зеленого фона */
+
+  /* --- Стили оформления --- */
+  display: flex; justify-content: space-between; align-items: center;
+  background-color: var(--white-bg);
+  border-radius: var(--border-radius-large);
+  padding: 15px 20px; /* Внутренние отступы */
+  box-shadow: var(--card-shadow);
+  /* --- Убираем внешние margin --- */
+  margin: 0;
 }
 
-.progress-labels {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Разносим верхний и нижний лейбл */
-  height: 120px; /* Та же высота, что и у бара */
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-align: right; /* Выравнивание текста справа */
-  padding-bottom: 5px; /* Небольшой отступ снизу для текущего значения */
-  padding-top: 5px; /* Небольшой отступ сверху для цели */
+/* Стили для .action-btn и его содержимого */
+.action-btn {
+  background: none; border: none; display: flex; flex-direction: column;
+  align-items: center; cursor: pointer; font-size: 12px;
+  color: var(--medium-text); text-align: center; padding: 5px;
+  flex-basis: 30%; font-weight: 500; text-decoration: none;
+}
+.action-btn svg { width: 28px; height: 28px; margin-bottom: 6px; color: var(--medium-text); }
+.action-btn .plus-icon {
+  width: 48px; height: 48px; background-color: var(--primary-purple);
+  color: var(--white-text); border-radius: 50%; display: flex; justify-content: center;
+  align-items: center; font-size: 30px; font-weight: bold;
+  margin-bottom: 6px; box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4);
+  transition: transform 0.2s ease;
+}
+.action-btn .plus-icon:active { transform: scale(0.95); }
+.action-btn span { margin-top: 4px; }
+
+
+/* --- Контейнер для Карточек Savings и т.д. (Светло-серый фон) --- */
+.content-container {
+  flex-grow: 1;
+  background-color: #f9fafb;
+  /* --- Скругление только верхних углов НЕ НУЖНО, т.к. он теперь под кнопками --- */
+  border-radius: 0;
+   /* --- ВАЖНО: Отступ СВЕРХУ, чтобы было место для НАД overlapping кнопками --- */
+  padding-top: 70px; /* Примерно половина высоты кнопок + запас */
+  padding-left: 0; /* Убираем боковые падинги отсюда */
+  padding-right: 0;
+  padding-bottom: var(--content-padding);
+  /* --- Убираем отрицательный margin-top --- */
+  margin-top: 0;
+  /* --- Убираем margin-bottom, т.к. padding-bottom body должен работать --- */
+  margin-bottom: 0;
+  position: relative;
+  z-index: 10; /* Ниже чем action-buttons */
 }
 
-.progress-label-top {
-    color: #555; /* Серый цвет для цели */
+
+/* --- Карточка Savings --- */
+.savings-card {
+  background-color: var(--light-gray-bg);
+  padding: 20px; /* Внутренние отступы */
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--card-shadow);
+  /* --- ВАЖНО: Боковые отступы для карточки внутри серого контейнера --- */
+  margin-left: 25px;
+  margin-right: 25px;
+  /* --- ВАЖНО: Добавляем верхний отступ (т.к. убрали из .content-container) --- */
+  /* УБИРАЕМ, т.к. у content-container есть padding-top */
+  /* margin-top: 25px; */
+   /* Отступ снизу, если будут другие карточки */
+  margin-bottom: 25px;
+  width: auto;
+  color: var(--dark-text);
 }
 
-.progress-label-current {
-    color: var(--main-text-color); /* Основной цвет для текущего значения */
-}
+/* Стили для содержимого .savings-card */
+.savings-card .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.savings-card h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.savings-card .options-btn { background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--light-text); padding: 0 5px; }
+.savings-card p { font-size: 13px; color: var(--medium-text); margin-bottom: 20px; line-height: 1.5; }
+.savings-visual { display: flex; align-items: flex-end; justify-content: space-between; }
+.piggy-bank-container { width: 60%; /* Пусто */ }
+.progress-info { display: flex; align-items: flex-end; flex-grow: 1; justify-content: flex-end; }
+.progress-bar-container { width: 12px; height: 100px; background-color: #e5e7eb; border-radius: 10px; position: relative; overflow: hidden; }
+.progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #8b5cf6, var(--primary-purple)); border-radius: 10px; transition: height 0.5s ease-out; }
+.progress-labels { display: flex; flex-direction: column; justify-content: space-between; height: 100px; font-size: 12px; font-weight: 500; color: var(--dark-text); text-align: right; margin-left: 10px; white-space: nowrap; }

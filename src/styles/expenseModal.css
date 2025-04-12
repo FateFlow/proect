@@ -1,51 +1,86 @@
 /* src/styles/expenseModal.css */
-.expense-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .expense-modal {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
-    text-align: center;
-  }
-  
-  .expense-modal h3 {
-    margin-bottom: 15px;
-  }
-  
-  .expense-modal input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .add-expense-button {
-    background-color: var(--blue-color);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .add-expense-button:hover {
-    background-color: var(--accent-color);
-  }
-  
+@import './variables.css';
+
+/* --- Оверлей (фон) --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; justify-content: center; align-items: flex-end; /* Внизу */
+  z-index: 1001; opacity: 1; animation: fadeIn 0.3s ease-out;
+}
+
+/* --- Контент модального окна (НОВЫЕ СТИЛИ) --- */
+.modal-content-new {
+  background-color: var(--light-gray-bg); /* Фон как у карточек */
+  padding: 25px var(--content-padding) 30px var(--content-padding);
+  border-radius: var(--border-radius-large) var(--border-radius-large) 0 0; /* Скругление только сверху */
+  width: 100%; max-width: 600px; box-sizing: border-box;
+  animation: slideUpModal 0.3s ease-out;
+  box-shadow: 0 -5px 20px rgba(0,0,0, 0.1);
+}
+
+/* Анимации */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUpModal { from { transform: translateY(100%); } to { transform: translateY(0); } } /* Исправлено */
+
+/* Поле ввода суммы */
+.amount-input {
+  width: 100%; padding: 14px 20px; margin-bottom: 25px;
+  border: none; border-radius: var(--border-radius-medium); font-size: 16px;
+  box-sizing: border-box; background-color: var(--input-bg);
+  text-align: left; font-weight: 500; color: var(--dark-text);
+}
+.amount-input::placeholder { color: #aaa; font-weight: normal; }
+.amount-input:focus { outline: none; background-color: var(--white-bg); }
+
+/* Заголовок Category */
+.category-title {
+  text-align: left; margin-top: 0;
+  /* --- ИЗМЕНЕНИЕ: Увеличиваем нижний отступ и жирность --- */
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 700; /* Увеличена жирность */
+  color: var(--dark-text);
+  letter-spacing: 0.5px; /* Добавлен небольшой интервал */
+}
+
+/* Кнопка "+ Add category" (если будет) */
+.add-category-btn {
+  background: none; border: none; padding: 5px 0; margin-bottom: 15px;
+  color: var(--medium-text); font-size: 15px; font-weight: 500;
+  cursor: pointer; text-align: left; display: block;
+}
+.add-category-btn:hover { color: var(--dark-text); }
+
+/* Список категорий */
+.category-list-new { margin-bottom: 30px; padding-left: 5px; }
+
+/* Элемент категории (текстовая кнопка) */
+.category-item-new {
+  display: block; background: none; border: none; padding: 10px 0;
+  margin-bottom: 5px; color: var(--dark-text); font-size: 16px;
+  font-weight: 500; cursor: pointer; text-align: left; width: 100%;
+  border-radius: 4px; transition: background-color 0.15s ease;
+}
+.category-item-new:hover { background-color: rgba(0, 0, 0, 0.04); }
+/* Стиль для выбранной категории */
+.category-item-new.selected {
+  color: var(--primary-purple); font-weight: 600;
+  background-color: rgba(168, 85, 247, 0.1);
+}
+
+/* Кнопка "Done" */
+.done-btn-new {
+  background-color: var(--medium-text); color: var(--white-text);
+  padding: 14px 20px; border: none;
+  border-radius: var(--border-radius-medium); cursor: pointer;
+  width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px;
+  transition: background-color 0.2s ease;
+}
+.done-btn-new:hover { background-color: var(--dark-text); }
+
+/* Сообщение об ошибке */
+.error-message-new {
+  color: var(--red-expense); font-size: 13px; font-weight: 500;
+  text-align: center; margin-top: -15px; margin-bottom: 15px; height: 1em;
+}
