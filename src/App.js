@@ -9,6 +9,7 @@ import HistoryPage from './pages/HistoryPage';
 import ReportPage from './pages/ReportPage';
 import PlanPage from './pages/PlanPage';
 import BillsPage from './pages/BillsPage';
+import AuthPage from './pages/AuthPage.jsx';
 // import BillsPage from './pages/BillsPage';
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
                         <Route path="/account" element={<AccountPage />} />
                         <Route path="/report" element={<ReportPage />} />
                         <Route path="/plan" element={<PlanPage />} />
+                        <Route path="/auth" element={<AuthPage />} />
                         <Route path="/bills" element={<BillsPage />} />
                         <Route path="/history" element={<HistoryPage transactions={transactions} />} />
                         {/* <Route path="/bills" element={<BillsPage />} /> */}

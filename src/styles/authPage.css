@@ -1,0 +1,159 @@
+/* src/styles/authPage.css */
+@import './variables.css';
+
+.auth-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Минус навигация */
+  padding: 20px var(--content-padding);
+  box-sizing: border-box;
+   /* Можно добавить градиент или фоновую картинку */
+  background: linear-gradient(135deg, var(--primary-green, #a3e635) 0%, var(--primary-purple, #a855f7) 100%);
+  /* Или */
+  /* background-image: url('../assets/images/auth-background.jpg'); */
+  /* background-size: cover; */
+}
+
+.auth-form-card {
+  width: 100%;
+  max-width: 400px; /* Ограничиваем ширину формы */
+  background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный белый фон */
+  /* Если нужен Glassmorphism (может тормозить): */
+  /* background-color: rgba(255, 255, 255, 0.15); */
+  /* backdrop-filter: blur(10px); */
+  /* border: 1px solid rgba(255, 255, 255, 0.2); */
+
+  padding: 30px 35px;
+  border-radius: var(--border-radius-large, 16px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  color: var(--dark-text); /* Цвет текста по умолчанию */
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.auth-form-card h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 1.8em;
+  font-weight: 600;
+  color: var(--dark-text);
+}
+
+.auth-form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Расстояние между инпутами и кнопкой */
+}
+
+/* --- Стили для полей ввода (как в референсе) --- */
+.input-box {
+  position: relative;
+  width: 100%;
+  border-bottom: 2px solid var(--medium-text, #666); /* Линия под инпутом */
+}
+
+.input-box input {
+  width: 100%;
+  height: 50px; /* Высота поля */
+  background: transparent; /* Прозрачный фон */
+  border: none;
+  outline: none;
+  font-size: 1em;
+  color: var(--dark-text); /* Цвет вводимого текста */
+  padding: 0 5px; /* Небольшие отступы */
+}
+
+.input-box label {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  color: var(--medium-text, #666); /* Цвет лейбла */
+  font-size: 1em;
+  pointer-events: none; /* Чтобы клик проходил сквозь лейбл */
+  transition: all 0.3s ease-out; /* Анимация */
+}
+
+/* Анимация лейбла при фокусе или вводе */
+/* :focus - когда поле в фокусе */
+/* :valid - когда поле НЕ пустое (из-за required) и соответствует типу (напр. email) */
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+  top: -5px; /* Поднимаем лейбл выше */
+  font-size: 0.8em; /* Уменьшаем шрифт */
+  color: var(--primary-purple, #8B5CF6); /* Меняем цвет при фокусе/вводе */
+}
+
+/* Подсветка линии при фокусе */
+.input-box input:focus {
+   border-bottom-color: var(--primary-purple, #8B5CF6);
+}
+
+/* Можно добавить иконки, если нужно */
+/*
+.input-box .input-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--medium-text);
+}
+.input-box input:focus ~ .input-icon {
+    color: var(--primary-purple);
+}
+*/
+
+/* Сообщение об ошибке */
+.error-message {
+  color: var(--red-expense, #dc3545);
+  font-size: 0.85em;
+  text-align: center;
+  margin: -10px 0; /* Отрицательный отступ, чтобы придвинуть к полям */
+  min-height: 1.2em; /* Резервируем место, чтобы форма не прыгала */
+}
+
+/* Кнопка Login/Register */
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-purple, #8B5CF6);
+  color: var(--white-text, #fff);
+  border: none;
+  border-radius: var(--border-radius-medium, 8px);
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Доп. отступ сверху */
+}
+.auth-button:hover:not(:disabled) {
+  background-color: var(--primary-purple-dark, #7c3aed);
+}
+.auth-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Текст и кнопка для переключения режима */
+.switch-mode-text {
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--medium-text);
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+.switch-mode-button {
+  background: none;
+  border: none;
+  color: var(--primary-purple, #8B5CF6);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 5px;
+  font-size: 1em; /* Чтобы был такого же размера */
+}
+.switch-mode-button:hover {
+    text-decoration: underline;
+}
