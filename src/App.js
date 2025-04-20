@@ -8,6 +8,7 @@ import AccountPage from './pages/AccountPage';
 import HistoryPage from './pages/HistoryPage';
 import ReportPage from './pages/ReportPage';
 import PlanPage from './pages/PlanPage';
+import BillsPage from './pages/BillsPage';
 // import BillsPage from './pages/BillsPage';
 
 function App() {
@@ -73,10 +74,11 @@ function App() {
                             path="/report"
                             element={<ReportPage transactions={transactions} />} // <<< ПЕРЕДАЕМ ПРОПС
                         />
-                        <Route path="/history" element={<HistoryPage transactions={transactions} />} />
                         <Route path="/account" element={<AccountPage />} />
                         <Route path="/report" element={<ReportPage />} />
                         <Route path="/plan" element={<PlanPage />} />
+                        <Route path="/bills" element={<BillsPage />} />
+                        <Route path="/history" element={<HistoryPage transactions={transactions} />} />
                         {/* <Route path="/bills" element={<BillsPage />} /> */}
                     </Routes>
                 </main>

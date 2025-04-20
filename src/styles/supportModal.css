@@ -1,0 +1,60 @@
+/* src/styles/supportModal.css - Версия с центрированием и без переменных */
+
+/* Стили для КОНТЕЙНЕРА модалки поддержки */
+.support-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрируем все по горизонтали */
+    text-align: center; /* Центрируем текст */
+    gap: 18px; /* Увеличим немного расстояние между элементами */
+    padding-bottom: 25px; /* Добавим отступ снизу перед кнопкой */
+  }
+  
+  /* Заголовок "Support" */
+  .support-modal-content .support-modal-title {
+    width: 100%;
+    text-align: center; /* Выравниваем по центру */
+    margin-top: 0;
+    margin-bottom: 0px; /* Убираем большой отступ снизу */
+    font-size: 1.3em; /* Крупнее */
+    font-weight: 600;
+    color: #333; /* Темный цвет */
+  }
+  
+  /* Обычный текст в модалке */
+  .support-modal-content .support-modal-text {
+    width: 100%;
+    text-align: center; /* Выравниваем по центру */
+    color: #555; /* Средне-серый цвет */
+    line-height: 1.5;
+    font-size: 1em; /* Нормальный размер */
+    margin: 0;
+  }
+  
+  /* Ссылка на Email */
+  .support-modal-content .support-email-link {
+    display: inline-block; /* Чтобы не растягивался на всю ширину */
+    text-align: center; /* Выравниваем по центру */
+    color: #8B5CF6; /* Фиолетовый цвет */
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: 1.05em; /* Чуть крупнее */
+    word-break: break-all;
+    margin: -5px 0; /* Уменьшим вертикальные отступы вокруг ссылки */
+  }
+  .support-modal-content .support-email-link:hover {
+      color: #7c3aed; /* Фиолетовый потемнее */
+  }
+  
+  /* Текст про FAQ */
+  .support-modal-content .support-modal-text.faq-text {
+    margin-top: 0px; /* Убираем отступ сверху */
+    font-style: italic;
+    font-size: 0.9em;
+    color: #888; /* Светло-серый */
+  }
+  
+  /* Добавим отступ для кнопки, если нужно */
+  .support-modal-content .done-btn-new {
+      margin-top: 10px; /* Отступ перед кнопкой */
+  }

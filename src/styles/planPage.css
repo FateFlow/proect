@@ -1,6 +1,105 @@
 /* src/styles/planPage.css */
-.page {
-    padding: 20px;
-    text-align: center;
-  }
-  
+@import './variables.css'; /* Подключаем переменные */
+
+.plan-page-container {
+  /* Используем тот же зеленый фон */
+  background-color: var(--main-green-bg, #AFFF33); /* Замените на ваш цвет/переменную */
+  padding: 15px var(--content-padding, 15px) 0 var(--content-padding, 15px);
+  min-height: 100vh; /* <-- Используйте ВАШУ высоту навигации */
+  box-sizing: border-box;
+}
+
+.plan-content-card {
+  background-color: var(--white-bg, #ffffff);
+  border-radius: var(--border-radius-large, 16px);
+  padding: 25px 20px; /* Отступы внутри карточки */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px; /* Отступ снизу перед плейсхолдером */
+}
+
+.plan-title {
+  font-size: 1.2em; /* Размер заголовка */
+  font-weight: 500;
+  color: var(--dark-text, #333);
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center; /* Заголовок по центру */
+}
+
+.add-goal-button {
+  display: flex; /* Ставим иконку и текст в ряд */
+  align-items: center;
+  justify-content: center; /* Центрируем содержимое кнопки */
+  gap: 8px; /* Расстояние между иконкой и текстом */
+  width: auto; /* Ширина по содержимому */
+  margin: 0 auto 25px auto; /* Центрируем кнопку и добавляем отступ снизу */
+  padding: 9px 18px;
+  background-color: var(--button-light-bg, #e0e0e0); /* Светлый фон кнопки */
+  border: none;
+  border-radius: var(--border-radius-medium, 20px); /* Скругление кнопки */
+  color: var(--dark-text, #333);
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-goal-button:hover {
+  background-color: var(--button-light-hover-bg, #d4d4d4);
+}
+
+.add-goal-button svg { /* Стили для иконки + */
+  font-size: 1em;
+}
+
+.goals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Расстояние между целями */
+  margin-bottom: 30px; /* Отступ после списка */
+}
+
+.goal-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px; /* Отступ между текстом и прогресс-баром */
+}
+
+.goal-name {
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--dark-text, #333);
+}
+
+.goal-amount-text {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: var(--medium-text, #555);
+  white-space: nowrap;
+}
+
+/* Контейнер прогресс-бара (серый фон) */
+.progress-bar-container {
+  width: 100%;
+  height: 8px; /* Высота полоски */
+  background-color: var(--progress-bg, #e9ecef); /* Цвет фона полоски */
+  border-radius: 4px; /* Скругление */
+  overflow: hidden; /* Чтобы скругление работало для вложенного бара */
+}
+
+/* Сам прогресс-бар (цветной) */
+.progress-bar {
+  height: 100%;
+  /* Основной цвет прогресса (фиолетовый из макета) */
+  background-color: var(--progress-fill-color, #8B5CF6); /* Замените на ваш цвет */
+  border-radius: 4px; /* Скругление */
+  transition: width 0.5s ease-out; /* Плавная анимация изменения ширины */
+}
+
+.future-goals-placeholder {
+  text-align: center;
+  color: var(--placeholder-text, #b0b0b0); /* Цвет плейсхолдера */
+  font-size: 0.9em;
+  padding: 20px 0;
+}

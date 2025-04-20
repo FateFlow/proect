@@ -1,6 +1,88 @@
 /* src/styles/historyPage.css */
-.page {
-    padding: 20px;
-    text-align: center;
-  }
-  
+@import './variables.css'; /* Подключаем переменные, если они используются */
+
+.history-page-container {
+  background-color: var(--app-background, #f0f0f0); /* Цвет фона страницы (можно взять из variables.css) */
+  padding: 15px var(--content-padding, 15px) 0 var(--content-padding, 15px); /* Отступы по бокам и сверху */
+  min-height: 100vh; /* Минимальная высота минус навигация (подстроить) */
+  box-sizing: border-box;
+  background-color: var(--main-green-bg, #a3e635);
+}
+
+.history-content-card {
+  background-color: var(--white-bg, #ffffff); /* Белый фон карточки */
+  border-radius: var(--border-radius-large, 16px); /* Скругление углов */
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Легкая тень */
+  /* Если карточка должна растягиваться только по мере наполнения,
+     можно не задавать ей высоту или min-height */
+}
+
+.history-title {
+  font-size: 1.4em; /* Размер заголовка */
+  font-weight: 600;
+  color: var(--dark-text, #333);
+  margin-top: 0;
+  margin-bottom: 25px; /* Отступ после заголовка */
+  text-align: left; /* Выравнивание по левому краю */
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* Расстояние между элементами истории */
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between; /* Детали слева, сумма справа */
+  align-items: center; /* Выравнивание по вертикали */
+  padding-bottom: 10px; /* Небольшой отступ или паддинг снизу */
+  border-bottom: 1px solid var(--separator-color, #eee); /* Линия-разделитель */
+}
+
+.history-item:last-child {
+  border-bottom: none; /* Убираем линию у последнего элемента */
+  padding-bottom: 0;
+}
+
+.history-item-details {
+  display: flex;
+  flex-direction: column; /* Категория над датой */
+  gap: 3px; /* Небольшой отступ между категорией и датой */
+  text-align: left;
+}
+
+.history-item-category {
+  font-size: 1em; /* Размер категории */
+  font-weight: 500;
+  color: var(--dark-text, #333);
+}
+
+.history-item-date {
+  font-size: 0.8em; /* Размер даты */
+  color: var(--medium-text, #888); /* Цвет даты */
+}
+
+.history-item-amount {
+  font-size: 1em;
+  font-weight: 600; /* Жирная сумма */
+  white-space: nowrap; /* Чтобы сумма не переносилась */
+  margin-left: 10px; /* Небольшой отступ слева от суммы */
+}
+
+/* Цвета для дохода и расхода */
+.history-item-amount.income {
+  color: var(--income-color, #28a745); /* Зеленый или синий для дохода */
+}
+
+.history-item-amount.expense {
+  color: var(--red-expense, #dc3545); /* Красный для расхода */
+}
+
+.no-history-message {
+  text-align: center;
+  color: var(--medium-text, #888);
+  margin-top: 30px;
+  padding: 20px 0;
+}

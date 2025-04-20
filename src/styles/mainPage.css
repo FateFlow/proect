@@ -6,21 +6,19 @@
   min-height: calc(100vh - var(--bottom-nav-height));
   display: flex;
   flex-direction: column;
-  /* --- ВАЖНО: Для абсолютного позиционирования дочерних элементов --- */
-  position: relative;
+  position: relative; /* Оставляем */
 }
 
 /* --- Секция Баланса (Зеленый фон) --- */
 .balance-section {
   background-color: var(--primary-green);
-  min-height: 58vh; /* Высота зеленой зоны */
+  min-height: 58vh;
   padding: 30px var(--content-padding) 20px var(--content-padding);
   display: flex; flex-direction: column;
   justify-content: center; align-items: center;
   text-align: center; color: var(--balance-text);
   border-radius: 0;
-  /* --- Убираем position: relative отсюда --- */
-  z-index: 5; /* Под карточками */
+  z-index: 5;
 }
 .balance-section span { font-size: 14px; font-weight: 500; opacity: 0.9; display: block; margin-bottom: 4px; }
 .balance-section h1 { font-size: 2.8em; margin: 0 0 18px 0; font-weight: 700; letter-spacing: -0.5px; }
@@ -33,22 +31,18 @@
 
 /* --- Секция кнопок действий (АБСОЛЮТНОЕ ПОЗИЦИОНИРОВАНИЕ) --- */
 .action-buttons {
-  /* --- ВАЖНО: Позиционирование --- */
   position: absolute;
-  top: 58vh; /* Располагаем верхний край на уровне низа зеленой секции */
-  transform: translateY(-50%); /* Сдвигаем ВВЕРХ на половину своей высоты */
-  left: 25px;  /* Отступ слева */
-  right: 25px; /* Отступ справа */
-  width: auto;  /* Ширина определяется отступами */
-  z-index: 15; /* Выше серого фона и зеленого фона */
-
-  /* --- Стили оформления --- */
+  top: 53.5vh;
+  transform: translateY(-50%);
+  left: 25px;
+  right: 25px;
+  width: auto;
+  z-index: 15;
   display: flex; justify-content: space-between; align-items: center;
   background-color: var(--white-bg);
   border-radius: var(--border-radius-large);
-  padding: 15px 20px; /* Внутренние отступы */
+  padding: 15px 20px;
   box-shadow: var(--card-shadow);
-  /* --- Убираем внешние margin --- */
   margin: 0;
 }
 
@@ -75,48 +69,106 @@
 .content-container {
   flex-grow: 1;
   background-color: #f9fafb;
-  /* --- Скругление только верхних углов НЕ НУЖНО, т.к. он теперь под кнопками --- */
   border-radius: 0;
-   /* --- ВАЖНО: Отступ СВЕРХУ, чтобы было место для НАД overlapping кнопками --- */
-  padding-top: 70px; /* Примерно половина высоты кнопок + запас */
-  padding-left: 0; /* Убираем боковые падинги отсюда */
+  /* --- УБИРАЕМ старый padding-top --- */
+  /* padding-top: 70px; */
+  padding-left: 0;
   padding-right: 0;
   padding-bottom: var(--content-padding);
-  /* --- Убираем отрицательный margin-top --- */
-  margin-top: 0;
-  /* --- Убираем margin-bottom, т.к. padding-bottom body должен работать --- */
+  /* --- ДОБАВЛЯЕМ отрицательный margin-top, чтобы подтянуть фон под кнопки --- */
+  margin-top: -40px; /* Подберите значение (примерно 1/2 высоты .action-buttons) */
+  /* --- ДОБАВЛЯЕМ НОВЫЙ padding-top для КОНТЕНТА внутри --- */
+  padding-top: 65px; /* Подберите значение (старый отступ + запас) */
   margin-bottom: 0;
   position: relative;
-  z-index: 10; /* Ниже чем action-buttons */
+  z-index: 10; /* Должен быть ниже кнопок (z-index: 15) */
 }
 
 
-/* --- Карточка Savings --- */
+/* --- НАЧАЛО: ОБНОВЛЕННАЯ Карточка Savings --- */
 .savings-card {
-  background-color: var(--light-gray-bg);
-  padding: 20px; /* Внутренние отступы */
-  border-radius: var(--border-radius-large);
-  box-shadow: var(--card-shadow);
-  /* --- ВАЖНО: Боковые отступы для карточки внутри серого контейнера --- */
+  position: relative; /* Необходимо для позиционирования оверлея или текста */
+  border-radius: var(--border-radius-large, 16px); /* Оставляем скругление */
+  overflow: hidden; /* Обрезаем все, что выходит за рамки скругления */
+  min-height: 200px; /* Минимальная высота карточки, подбери по вкусу */
+  display: flex; /* Используем flex для выравнивания контента */
+  flex-direction: column;
+  justify-content: center; /* Выравниваем контент по центру вертикально */
+
+  /* --- Фоновое изображение и ОВЕРЛЕЙ --- */
+  /* !!! ВАЖНО: Замени 'images/savings-bg.jpg' на твой ПРАВИЛЬНЫЙ путь от папки PUBLIC !!! */
+  /* Например, если картинка в public/images/savings-bg.jpg, путь будет '/images/savings-bg.jpg' */
+  background-image:
+    /* Темный оверлей (настрой прозрачность 0.5 = 50%) */
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../assets/images/savings-bg.jpg');
+
+  background-size: cover;   /* Масштабируем, чтобы заполнить контейнер */
+  background-position: center center; /* Центрируем изображение */
+
+  /* --- Сохраняем важные отступы из твоего старого кода --- */
   margin-left: 25px;
   margin-right: 25px;
-  /* --- ВАЖНО: Добавляем верхний отступ (т.к. убрали из .content-container) --- */
-  /* УБИРАЕМ, т.к. у content-container есть padding-top */
-  /* margin-top: 25px; */
-   /* Отступ снизу, если будут другие карточки */
-  margin-bottom: 25px;
-  width: auto;
-  color: var(--dark-text);
+  margin-bottom: 25px; /* Отступ снизу, если будут другие карточки */
+  /* --- Убираем background-color, т.к. теперь есть фон-картинка --- */
+  /* background-color: var(--light-gray-bg); */
+  /* --- Убираем padding, т.к. он теперь у вложенного .savings-card-content --- */
+  /* padding: 20px; */
+  /* --- Убираем color, т.к. цвет задается для текста внутри --- */
+  /* color: var(--dark-text); */
+  width: auto; /* Оставляем */
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Можно оставить тень */
 }
 
-/* Стили для содержимого .savings-card */
-.savings-card .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.savings-card h2 { margin: 0; font-size: 18px; font-weight: 600; }
-.savings-card .options-btn { background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--light-text); padding: 0 5px; }
-.savings-card p { font-size: 13px; color: var(--medium-text); margin-bottom: 20px; line-height: 1.5; }
-.savings-visual { display: flex; align-items: flex-end; justify-content: space-between; }
-.piggy-bank-container { width: 60%; /* Пусто */ }
-.progress-info { display: flex; align-items: flex-end; flex-grow: 1; justify-content: flex-end; }
-.progress-bar-container { width: 12px; height: 100px; background-color: #e5e7eb; border-radius: 10px; position: relative; overflow: hidden; }
-.progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #8b5cf6, var(--primary-purple)); border-radius: 10px; transition: height 0.5s ease-out; }
-.progress-labels { display: flex; flex-direction: column; justify-content: space-between; height: 100px; font-size: 12px; font-weight: 500; color: var(--dark-text); text-align: right; margin-left: 10px; white-space: nowrap; }
+/* Контейнер для текста внутри карточки */
+.savings-card-content {
+  position: relative;
+  z-index: 1;
+  padding: 20px 25px; /* Внутренние отступы для текста */
+  text-align: left;
+}
+
+/* Стили для заголовка Savings */
+.savings-card-content h2 {
+  color: var(--white-text, #ffffff); /* Белый цвет текста */
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.4em; /* Подбери размер */
+  font-weight: 600;
+}
+
+/* Стили для параграфов текста */
+.savings-card-content p {
+  color: var(--white-text, #ffffff); /* Белый цвет текста */
+  line-height: 1.6;
+  margin-bottom: 15px;
+  font-size: 0.95em; /* Подбери размер */
+}
+.savings-card-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Опционально: немного другие стили для первого параграфа */
+.savings-intro-text {
+    font-weight: 500;
+    font-size: 1em;
+}
+/* --- КОНЕЦ: ОБНОВЛЕННАЯ Карточка Savings --- */
+
+
+/* === НАЧАЛО: Удаленные старые стили для .savings-card ===
+   (Эти стили больше не нужны, так как структура карточки изменилась)
+
+    .savings-card .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .savings-card h2 { margin: 0; font-size: 18px; font-weight: 600; } // Заменено стилем выше
+    .savings-card .options-btn { background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--light-text); padding: 0 5px; }
+    .savings-card p { font-size: 13px; color: var(--medium-text); margin-bottom: 20px; line-height: 1.5; } // Заменено стилем выше
+    .savings-visual { display: flex; align-items: flex-end; justify-content: space-between; }
+    .piggy-bank-container { width: 60%; }
+    .progress-info { display: flex; align-items: flex-end; flex-grow: 1; justify-content: flex-end; }
+    .progress-bar-container { width: 12px; height: 100px; background-color: #e5e7eb; border-radius: 10px; position: relative; overflow: hidden; }
+    .progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #8b5cf6, var(--primary-purple)); border-radius: 10px; transition: height 0.5s ease-out; }
+    .progress-labels { display: flex; flex-direction: column; justify-content: space-between; height: 100px; font-size: 12px; font-weight: 500; color: var(--dark-text); text-align: right; margin-left: 10px; white-space: nowrap; }
+
+=== КОНЕЦ: Удаленные старые стили для .savings-card === */

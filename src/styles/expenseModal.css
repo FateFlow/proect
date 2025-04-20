@@ -42,6 +42,7 @@
   font-weight: 700; /* Увеличена жирность */
   color: var(--dark-text);
   letter-spacing: 0.5px; /* Добавлен небольшой интервал */
+  padding-left: 15px;
 }
 
 /* Кнопка "+ Add category" (если будет) */

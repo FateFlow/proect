@@ -1,99 +1,90 @@
 // src/components/ExpenseModal.jsx
 import React, { useState, useEffect } from 'react';
-import '../styles/expenseModal.css'; // Убедись, что стили импортированы
+import '../styles/expenseModal.css'; // Импортируем стили модалки
 
+// Принимаем пропсы от MainPage
 function ExpenseModal({ isOpen, onClose, onSave }) {
+    // Состояние для суммы
     const [amount, setAmount] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [error, setError] = useState(''); // Для сообщений об ошибках
+    // НОВОЕ: Состояние для ввода категории текстом
+    const [categoryInput, setCategoryInput] = useState('');
+    // Состояние для ошибки валидации
+    const [error, setError] = useState('');
 
-    // Список категорий (как на макете фото 5)
-    const categories = ["Automobile", "Renting a home", "Cosmetics", "Household chemicals", "Hobby"];
-
-    // Сброс состояния при открытии
+    // Эффект для сброса полей при каждом открытии модалки
     useEffect(() => {
         if (isOpen) {
             setAmount('');
-            setSelectedCategory(null);
+            setCategoryInput('');
             setError('');
-            // Фокус на поле ввода суммы
-            setTimeout(() => document.getElementById('expenseAmountInput')?.focus(), 100);
         }
-    }, [isOpen]);
+    }, [isOpen]); // Зависимость от isOpen
 
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(category);
-        if (error) setError(''); // Сбросить ошибку при выборе
-    };
+    // Обработчик нажатия кнопки "Done"
+    const handleSave = () => {
+        setError(''); // Сброс предыдущей ошибки
 
-    const handleSaveClick = () => {
-        const numericAmount = parseFloat(amount.replace(',', '.'));
+        // Валидация
+        if (!amount.trim() || !categoryInput.trim()) {
+            setError('Please enter both amount and category.');
+            return;
+        }
+        const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
-            setError('Please enter a valid amount.');
+            setError('Please enter a valid positive amount.');
             return;
         }
-        if (!selectedCategory) {
-            setError('Please select a category.');
-            return;
-        }
-        setError('');
-        // Вызываем функцию onSave, переданную из MainPage
-        onSave({ amount: numericAmount, category: selectedCategory });
-        // Закрытие окна происходит в MainPage после вызова onSave
+
+        // Формируем объект данных для передачи в MainPage (через onSave)
+        const expenseData = {
+            amount: numericAmount,
+            category: categoryInput.trim(), // Используем введенную категорию
+            date: new Date().toISOString(), // Добавляем текущую дату/время
+            // id можно генерировать здесь или уровнем выше (в App.js при добавлении в список)
+        };
+
+        // Вызываем onSave, переданный из MainPage
+        onSave(expenseData);
+        // onClose(); // Закрытие теперь обрабатывается в MainPage после вызова onSave
     };
 
-    // Не рендерим ничего, если окно не открыто (управляется в MainPage)
+    // Если модалка не должна быть открыта, ничего не рендерим
     if (!isOpen) {
         return null;
     }
 
+    // JSX разметка модального окна
     return (
-        // Оверлей (фон)
-        <div className="modal-overlay" onClick={onClose}>
-            {/* Контент модального окна */}
-            <div className="modal-content-new" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={onClose}> {/* Закрытие по клику на фон */}
+            <div className="modal-content-new" onClick={(e) => e.stopPropagation()}> {/* Сам контент, клик по нему не закрывает */}
 
                 {/* Поле ввода суммы */}
                 <input
                     type="number"
-                    inputMode="decimal"
-                    step="0.01"
-                    id="expenseAmountInput"
-                    className="amount-input" // Используем класс из expenseModal.css
+                    className="amount-input"
                     placeholder="Enter the amount of money"
                     value={amount}
-                    onChange={(e) => {
-                        setAmount(e.target.value);
-                        if (error) setError('');
-                    }}
+                    onChange={(e) => setAmount(e.target.value)}
+                    autoFocus // Автофокус на поле суммы
                 />
 
-                {/* Заголовок "Category" */}
-                <h3 className="category-title">Category</h3>
+                {/* Заголовок для категории */}
+                <h4 className="category-title">Category</h4>
 
-                {/* Кнопка "+ Add category" (пока неактивна) */}
-                {/* <button className="add-category-btn">+ Add category</button> */}
+                {/* НОВОЕ: Поле ввода категории */}
+                <input
+                    type="text"
+                    className="amount-input" // Используем тот же стиль
+                    placeholder="Enter category name"
+                    value={categoryInput}
+                    onChange={(e) => setCategoryInput(e.target.value)}
+                />
 
-                {/* Список категорий */}
-                <div className="category-list-new">
-                    {categories.map(category => (
-                        <button
-                            key={category}
-                            // Используем классы из expenseModal.css
-                            className={`category-item-new ${selectedCategory === category ? 'selected' : ''}`}
-                            onClick={() => handleCategoryClick(category)}
-                        >
-                            {category}
-                        </button>
-                    ))}
-                </div>
-
-                 {/* Отображение ошибки */}
-                 {error && <p className="error-message-new">{error}</p>}
+                {/* Отображение ошибки валидации */}
+                {error && <p className="error-message-new">{error}</p>}
 
                 {/* Кнопка "Done" */}
-                 {/* Используем класс из expenseModal.css */}
-                <button className="done-btn-new" onClick={handleSaveClick}>
+                <button className="done-btn-new" onClick={handleSave}>
                     Done
                 </button>
             </div>

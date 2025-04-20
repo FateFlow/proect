@@ -29,11 +29,6 @@ function MainPage({
         handleCloseExpenseModal();
     };
 
-    // Константы для Savings (замени на реальные данные)
-    const targetSavings = 500;
-    const currentSavings = 233;
-    const progressPercent = targetSavings > 0 ? (currentSavings / targetSavings) * 100 : 0;
-
     return (
         // --- Добавляем position: relative сюда ---
         <div className="main-page-container">
@@ -56,17 +51,19 @@ function MainPage({
             <div className="content-container">
 
                 {/* Карточка Savings теперь первый элемент внутри этого контейнера */}
-                <section className="savings-card">
-                   <div className="card-header"> <h2>Savings</h2> <button className="options-btn">...</button> </div>
-                   <p>Set your own goals for a month or year</p>
-                   <div className="savings-visual">
-                         <div className="piggy-bank-container"> {/* Пусто */} </div>
-                         <div className="progress-info">
-                            <div className="progress-bar-container"> <div className="progress-bar" style={{ height: `${Math.min(progressPercent, 100)}%` }}></div> </div>
-                            <div className="progress-labels"> <span>— {targetSavings}$</span> <span>— {currentSavings}$</span> </div>
-                         </div>
-                    </div>
-                </section>
+<section className="savings-card">
+    {/* Добавляем контейнер для текста поверх фона */}
+    <div className="savings-card-content">
+        <h2>Savings</h2>
+        <p className="savings-intro-text">
+            Easily and conveniently manage your finances!
+        </p>
+        <p className="savings-detail-text">
+            Track your expenses, plan your budget, and achieve your financial goals — all in one place. Simplicity, clarity, and full control over your money.
+        </p>
+    </div>
+</section>
+{/* --- КОНЕЦ: ОБНОВЛЕННАЯ КАРТОЧКА SAVINGS --- */}
 
                 {/* Сюда можно добавлять другие карточки или секции */}
 
@@ -87,6 +84,10 @@ function MainPage({
                     onAddAmount={onAddAmountToBalance}
                 />
             )}
+                        {/* --- ДОБАВИТЬ ЭТОТ БЛОК --- */}
+            {/* Компенсация высоты нижней навигации */}
+            <div style={{ height: '69px' }}></div> {/* <-- УКАЖИ ТОЧНУЮ ВЫСОТУ НАВИГАЦИИ */}
+            {/* --- КОНЕЦ БЛОКА --- */}
         </div> // Конец main-page-container
     );
 }

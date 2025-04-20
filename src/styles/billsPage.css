@@ -1,6 +1,125 @@
-/* src/styles/billsPage.css */
-.page {
-    padding: 20px;
+/* --- Стили для страницы Счетов (BillsPage) --- */
+
+.bills-page-container {
+  padding: 15px;
+  padding-bottom: 90px; /* Добавляем отступ снизу равный высоте + запасу для панели навигации */
+  background-color: #a3e635; /* Легкий фон, если нужно */
+  min-height: 100vh; /* Занимаем высоту экрана минус навигация (подстроить) */
+  box-sizing: border-box;
+}
+
+.bills-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Стили для переключателей Month/Week */
+.toggle-buttons {
+  display: flex;
+  background-color: #e0e0e0; /* Фон контейнера кнопок */
+  border-radius: 20px; /* Скругление как у контейнера */
+  overflow: hidden; /* Чтобыскругление работало */
+  padding: 3px; /* Небольшой внутренний отступ */
+}
+
+.toggle-btn {
+  padding: 6px 16px;
+  border: none;
+  background-color: transparent; /* По умолчанию прозрачные */
+  color: #555;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  border-radius: 18px; /* Скругление кнопок внутри */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.toggle-btn.active {
+  background-color: #ffffff; /* Белый фон для активной */
+  color: #000000; /* Черный текст для активной */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Небольшая тень */
+}
+
+/* Стили для кнопки "+ Add bill" */
+.add-bill-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Пространство между иконкой и текстом */
+  padding: 8px 15px;
+  background-color: #f0f0f0; /* Светло-серый фон */
+  border: 1px solid #dcdcdc; /* Тонкая рамка */
+  border-radius: 20px; /* Сильное скругление */
+  color: #333;
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-bill-btn:hover {
+  background-color: #e6e6e6;
+}
+
+.add-bill-btn svg { /* Стили для иконки внутри кнопки */
+  font-size: 1em;
+}
+
+/* Стили для списка счетов */
+.bills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Пространство между элементами списка */
+}
+
+.bill-item {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff; /* Белый фон элемента */
+  padding: 12px 15px;
+  border-radius: 10px; /* Скругление углов */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Легкая тень */
+}
+
+.bill-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background-color: #007bff; /* Синий фон иконки (может отличаться в дизайне) */
+  color: white;
+  border-radius: 50%; /* Круглая форма */
+  margin-right: 15px;
+  font-size: 1.2em; /* Размер иконки */
+}
+
+.bill-details {
+  flex-grow: 1; /* Занимает все доступное пространство между иконкой и суммой */
+  display: flex;
+  flex-direction: column;
+}
+
+.bill-name {
+  font-weight: 600;
+  font-size: 1em;
+  color: #333;
+}
+
+.bill-category-hint {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.bill-amount {
+  font-weight: 600;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.no-bills-message {
     text-align: center;
-  }
-  
+    color: #777;
+    margin-top: 30px;
+}
