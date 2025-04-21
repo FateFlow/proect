@@ -1,0 +1,21 @@
+version: '3.8' # Версия синтаксиса docker-compose
+
+services:
+  # Наш сервис базы данных PostgreSQL
+  db:
+    image: postgres:15 # Используем официальный образ PostgreSQL версии 15 (можно выбрать другую)
+    container_name: expense_tracker_db # Имя контейнера для удобства
+    environment:
+      POSTGRES_USER: user # Имя пользователя базы данных (можешь поменять)
+      POSTGRES_PASSWORD: password # Пароль пользователя (ОБЯЗАТЕЛЬНО поменяй на сложный позже!)
+      POSTGRES_DB: expensedb # Название базы данных, которая будет создана при первом запуске
+    ports:
+      - "5432:5432" # Пробрасываем порт 5432 из контейнера на порт 5432 твоего компьютера
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Создаем volume для сохранения данных БД между перезапусками контейнера
+    restart: always # Автоматически перезапускать контейнер, если он упадет
+
+volumes:
+  # Определяем volume, который мы используем выше
+  postgres_data:
+    driver: local # Используем стандартный драйвер Docker для volumes
