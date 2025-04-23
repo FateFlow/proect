@@ -1,67 +1,75 @@
 // src/components/AddBalanceModal.jsx
 import React, { useState, useEffect } from 'react';
-// Используем стили expenseModal, т.к. дизайн похож
-import '../styles/expenseModal.css';
+import '../styles/expenseModal.css'; // Используем стили expenseModal
 
-function AddBalanceModal({ isOpen, onClose, onAddAmount }) {
+// --- ДОБАВЛЯЕМ isAdding и addError в пропсы ---
+function AddBalanceModal({ isOpen, onClose, onAddAmount, isAdding, addError }) {
     const [amount, setAmount] = useState('');
-    const [error, setError] = useState('');
+    // Убираем локальное состояние ошибки, будем использовать addError из пропсов
+    // const [error, setError] = useState('');
+    // Добавим локальную ошибку только для ВАЛИДАЦИИ ввода
+    const [validationError, setValidationError] = useState('');
 
-    // Сброс состояния при открытии
+
     useEffect(() => {
         if (isOpen) {
             setAmount('');
-            setError('');
+            setValidationError(''); // Сбрасываем ошибку валидации
+            // Ошибку сервера (addError) не сбрасываем здесь, она придет извне
             setTimeout(() => document.getElementById('addBalanceAmountInput')?.focus(), 100);
         }
     }, [isOpen]);
 
     const handleAddClick = () => {
+        // Валидация ввода
         const numericAmount = parseFloat(amount.replace(',', '.'));
         if (isNaN(numericAmount) || numericAmount <= 0) {
-            setError('Please enter a valid positive amount to add.');
+            setValidationError('Please enter a valid positive amount to add.'); // Устанавливаем ошибку валидации
             return;
         }
-        setError('');
-        onAddAmount(numericAmount); // Вызываем колбэк с суммой для добавления
+        setValidationError(''); // Сбрасываем ошибку валидации, если все ок
+
+        // Вызываем колбэк из MainPage, передавая число
+        onAddAmount(numericAmount);
     };
 
-    if (!isOpen) {
-        return null;
-    }
+    if (!isOpen) { return null; }
 
     return (
-        // Используем существующий оверлей
-        <div className="modal-overlay" onClick={onClose}>
-            {/* Используем .modal-content-new для схожего вида */}
+        <div className="modal-overlay" onClick={isAdding ? undefined : onClose}> {/* Не закрывать при клике во время загрузки */}
             <div className="modal-content-new" onClick={(e) => e.stopPropagation()}>
-
-                {/* Заголовок */}
-                {/* Используем .category-title для схожего вида заголовка */}
                 <h3 className="category-title" style={{ textAlign: 'center', marginBottom: '25px' }}>Add to Balance</h3>
-
-                {/* Поле ввода суммы */}
                 <input
                     type="number"
                     inputMode="decimal"
                     step="0.01"
                     id="addBalanceAmountInput"
-                    className="amount-input" // Используем тот же стиль инпута
+                    className="amount-input"
                     placeholder="Enter amount to add"
                     value={amount}
                     onChange={(e) => {
                         setAmount(e.target.value);
-                        if (error) setError('');
+                        // Сбрасываем ошибку валидации при изменении ввода
+                        if (validationError) setValidationError('');
                     }}
+                    // --- Блокируем поле во время отправки ---
+                    disabled={isAdding}
                 />
 
-                {/* Сообщение об ошибке */}
-                {error && <p className="error-message-new" style={{ marginTop: '-10px' }}>{error}</p>}
+                {/* --- Отображаем ошибку ВАЛИДАЦИИ --- */}
+                {validationError && <p className="error-message-new" style={{ marginTop: '-10px' }}>{validationError}</p>}
+                {/* --- Отображаем ошибку СЕРВЕРА (из пропсов) --- */}
+                {!validationError && addError && <p className="error-message-new" style={{ marginTop: '-10px' }}>{addError}</p>}
 
-                {/* Кнопка "Add" */}
-                {/* Используем .done-btn-new для схожего вида кнопки */}
-                <button className="done-btn-new" onClick={handleAddClick} style={{ marginTop: '25px' }}>
-                    Add Amount
+                {/* Кнопка "Add Amount" */}
+                <button
+                    className="done-btn-new"
+                    onClick={handleAddClick}
+                    style={{ marginTop: '25px' }}
+                    // --- Блокируем кнопку и меняем текст во время отправки ---
+                    disabled={isAdding}
+                >
+                    {isAdding ? 'Adding...' : 'Add Amount'}
                 </button>
             </div>
         </div>

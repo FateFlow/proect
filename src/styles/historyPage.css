@@ -3,10 +3,15 @@
 
 .history-page-container {
   background-color: var(--app-background, #f0f0f0); /* Цвет фона страницы (можно взять из variables.css) */
-  padding: 15px var(--content-padding, 15px) 0 var(--content-padding, 15px); /* Отступы по бокам и сверху */
-  min-height: 100vh; /* Минимальная высота минус навигация (подстроить) */
+  /* Твои отступы: */
+  padding: 15px var(--content-padding, 15px) 0 var(--content-padding, 15px);
+  min-height: 100vh; /* Минимальная высота */
   box-sizing: border-box;
   background-color: var(--main-green-bg, #a3e635);
+
+  /* --- ДОБАВЬ ЭТУ СТРОКУ --- */
+  padding-bottom: 69px; /* Компенсация высоты навигации (подставь точную высоту!) */
+  /* --- КОНЕЦ ДОБАВЛЕННОЙ СТРОКИ --- */
 }
 
 .history-content-card {

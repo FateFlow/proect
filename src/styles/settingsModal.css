@@ -1,118 +1,104 @@
 /* src/styles/settingsModal.css */
-@import './variables.css';
 
-/* Дополнительные стили для контента модалки настроек */
 .settings-modal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; /* Растягиваем элементы по ширине */
-  text-align: left; /* Выравниваем текст влево по умолчанию */
-  gap: 15px;
+  /* Можно задать max-width */
+   max-width: 450px;
 }
 
 .settings-modal-title {
-  text-align: center; /* Заголовок по центру */
-  margin-bottom: 5px;
+  text-align: center;
+  margin-bottom: 10px;
   font-size: 1.3em;
   font-weight: 600;
-  color: var(--dark-text);
 }
 
 .settings-modal-description {
   text-align: center;
-  font-size: 0.95em;
   color: var(--medium-text);
-  margin-bottom: 15px; /* Отступ после описания */
+  font-size: 0.9em;
+  margin-bottom: 25px;
 }
 
 .settings-list {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Расстояние между настройками */
-  margin-bottom: 20px;
+  gap: 18px; /* Расстояние между настройками */
 }
 
 .setting-item {
   display: flex;
-  justify-content: space-between; /* Метка слева, контрол справа */
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--separator-color, #eee); /* Разделитель */
+  flex-direction: column; /* Лейбл над полем */
+  /* Или: display: flex; align-items: center; justify-content: space-between; для лейбла слева */
 }
-.setting-item:last-of-type { /* Убираем разделитель у последнего item'а перед кнопками */
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
 
 .setting-label {
+  font-size: 0.9em;
   font-weight: 500;
-  color: var(--dark-text);
-  margin-right: 15px; /* Отступ от контрола */
-  white-space: nowrap;
+  color: #555;
+  margin-bottom: 6px;
 }
 
-/* Выпадающий список валют */
+/* Общие стили для инпута и селекта */
+.setting-input,
 .setting-select {
-  padding: 6px 10px;
+  width: 100%;
+  padding: 10px 12px;
   border: 1px solid #ccc;
-  border-radius: var(--border-radius-small, 6px);
-  min-width: 80px; /* Минимальная ширина */
-  font-size: 0.95em;
-  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1em;
+  box-sizing: border-box; /* Учитывать padding и border в ширине */
 }
-.setting-select:focus {
-  outline: none;
-  border-color: var(--primary-purple);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-}
-
-/* Кнопка переключения темы (пример) */
-.theme-toggle-button {
-  padding: 6px 12px;
-  border: 1px solid var(--primary-purple);
-  background-color: transparent;
-  color: var(--primary-purple);
-  border-radius: var(--border-radius-small, 6px);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-.theme-toggle-button:hover {
-  background-color: rgba(139, 92, 246, 0.1);
+.setting-select {
+    appearance: none; /* Убрать стандартную стрелку */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Добавить свою стрелку */
+    background-position: right 0.7rem center;
+    background-repeat: no-repeat;
+    background-size: 1.2em 1.2em;
+    padding-right: 2.5rem; /* Место для стрелки */
 }
 
-/* Кнопки действий в настройках */
+/* Кнопки действий в модалке */
 .setting-action-button {
   width: 100%;
   padding: 12px;
-  text-align: center;
   border: none;
-  border-radius: var(--border-radius-medium, 8px);
+  border-radius: 8px;
   font-size: 1em;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  /* margin-top: 5px; */ /* Отступ между кнопками (если нужно) */
+  margin-top: 8px; /* Небольшой отступ между кнопками */
 }
 
-.password-button {
-  background-color: var(--primary-purple, #8B5CF6);
-  color: var(--white-text, #fff);
+.save-button {
+    background-color: var(--primary-purple, #8b5cf6);
+    color: white;
 }
-.password-button:hover {
-  background-color: var(--primary-purple-dark, #7c3aed);
+.save-button:hover {
+    background-color: #7c3aed;
 }
-
-.notification-button {
-  background-color: var(--medium-text, #6b7280);
-  color: var(--white-text, #fff);
-}
-.notification-button:hover {
-    background-color: #4b5563; /* Чуть темнее */
+.save-button:disabled {
+    background-color: #c7b3f0;
+    cursor: not-allowed;
 }
 
-/* Стили для кнопки Close уже есть в .done-btn-new */
-.settings-modal-content .done-btn-new {
-    margin-top: 10px; /* Отступ перед кнопкой Close */
+.logout-button {
+    background-color: #f8f9fa; /* Светлый фон */
+    color: var(--red-expense, #dc3545); /* Красный текст */
+    border: 1px solid #dee2e6;
+}
+.logout-button:hover {
+    background-color: #e9ecef;
+}
+.logout-button:disabled {
+    background-color: #f8f9fa;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Сообщение об ошибке (используем класс из expenseModal.css) */
+.error-message-new {
+    margin-top: 10px;
+    margin-bottom: 5px; /* Уменьшим отступ снизу */
+    text-align: center;
 }

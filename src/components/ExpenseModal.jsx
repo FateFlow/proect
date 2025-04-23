@@ -1,91 +1,89 @@
 // src/components/ExpenseModal.jsx
 import React, { useState, useEffect } from 'react';
-import '../styles/expenseModal.css'; // Импортируем стили модалки
+import '../styles/expenseModal.css';
 
-// Принимаем пропсы от MainPage
-function ExpenseModal({ isOpen, onClose, onSave }) {
-    // Состояние для суммы
+// Добавляем isSaving и saveError в пропсы
+function ExpenseModal({ isOpen, onClose, onSave, isSaving, saveError }) {
     const [amount, setAmount] = useState('');
-    // НОВОЕ: Состояние для ввода категории текстом
     const [categoryInput, setCategoryInput] = useState('');
-    // Состояние для ошибки валидации
-    const [error, setError] = useState('');
+    // Убираем локальную ошибку, будем использовать saveError из пропсов
+    // const [error, setError] = useState('');
 
-    // Эффект для сброса полей при каждом открытии модалки
     useEffect(() => {
         if (isOpen) {
             setAmount('');
             setCategoryInput('');
-            setError('');
+            // Локальную ошибку больше не сбрасываем
+            // setError('');
         }
-    }, [isOpen]); // Зависимость от isOpen
+    }, [isOpen]);
 
-    // Обработчик нажатия кнопки "Done"
     const handleSave = () => {
-        setError(''); // Сброс предыдущей ошибки
-
-        // Валидация
+        // Локальная валидация (оставляем, чтобы не отправлять заведомо неверные данные)
         if (!amount.trim() || !categoryInput.trim()) {
-            setError('Please enter both amount and category.');
-            return;
+           // Можно показать локальную ошибку или просто не вызывать onSave
+           console.warn("Amount or category is empty");
+           // Или установить локальную ошибку, если нужно ее показать
+           // setLocalError('Please enter both amount and category.');
+           return;
         }
         const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
-            setError('Please enter a valid positive amount.');
+            console.warn("Invalid amount");
+            // setLocalError('Please enter a valid positive amount.');
             return;
         }
 
-        // Формируем объект данных для передачи в MainPage (через onSave)
         const expenseData = {
             amount: numericAmount,
-            category: categoryInput.trim(), // Используем введенную категорию
-            date: new Date().toISOString(), // Добавляем текущую дату/время
-            // id можно генерировать здесь или уровнем выше (в App.js при добавлении в список)
+            category: categoryInput.trim(),
+            date: new Date().toISOString(),
+            // Добавляем notes, если нужно поле для заметок
+            notes: '', // Или добавить поле ввода для notes
         };
 
-        // Вызываем onSave, переданный из MainPage
+        // Вызываем onSave (который теперь handleSaveExpenseSubmit в MainPage)
         onSave(expenseData);
-        // onClose(); // Закрытие теперь обрабатывается в MainPage после вызова onSave
+        // Закрытие модалки происходит в MainPage после успешного сохранения
     };
 
-    // Если модалка не должна быть открыта, ничего не рендерим
-    if (!isOpen) {
-        return null;
-    }
+    if (!isOpen) { return null; }
 
-    // JSX разметка модального окна
     return (
-        <div className="modal-overlay" onClick={onClose}> {/* Закрытие по клику на фон */}
-            <div className="modal-content-new" onClick={(e) => e.stopPropagation()}> {/* Сам контент, клик по нему не закрывает */}
-
-                {/* Поле ввода суммы */}
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content-new" onClick={(e) => e.stopPropagation()}>
                 <input
                     type="number"
                     className="amount-input"
                     placeholder="Enter the amount of money"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    autoFocus // Автофокус на поле суммы
+                    disabled={isSaving} // Блокируем ввод во время сохранения
+                    autoFocus
                 />
-
-                {/* Заголовок для категории */}
                 <h4 className="category-title">Category</h4>
-
-                {/* НОВОЕ: Поле ввода категории */}
                 <input
                     type="text"
-                    className="amount-input" // Используем тот же стиль
+                    className="amount-input"
                     placeholder="Enter category name"
                     value={categoryInput}
                     onChange={(e) => setCategoryInput(e.target.value)}
+                    disabled={isSaving} // Блокируем ввод во время сохранения
                 />
 
-                {/* Отображение ошибки валидации */}
-                {error && <p className="error-message-new">{error}</p>}
+                 {/* Отображение ОШИБКИ СОХРАНЕНИЯ (из пропсов) */}
+                {saveError && <p className="error-message-new">{saveError}</p>}
 
-                {/* Кнопка "Done" */}
-                <button className="done-btn-new" onClick={handleSave}>
-                    Done
+                {/* Можно добавить локальную ошибку валидации, если нужно */}
+                {/* {localError && <p className="error-message-new">{localError}</p>} */}
+
+                 {/* Кнопка "Done" показывает статус сохранения */}
+                <button
+                    className="done-btn-new"
+                    onClick={handleSave}
+                    disabled={isSaving} // Блокируем кнопку во время сохранения
+                >
+                    {isSaving ? 'Saving...' : 'Done'}
                 </button>
             </div>
         </div>

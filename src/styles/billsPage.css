@@ -1,125 +1,90 @@
-/* --- Стили для страницы Счетов (BillsPage) --- */
+/* src/styles/billsPage.css */
+@import './variables.css';
 
 .bills-page-container {
-  padding: 15px;
-  padding-bottom: 90px; /* Добавляем отступ снизу равный высоте + запасу для панели навигации */
-  background-color: #a3e635; /* Легкий фон, если нужно */
-  min-height: 100vh; /* Занимаем высоту экрана минус навигация (подстроить) */
+  min-height: 100vh;
   box-sizing: border-box;
+  background-color: var(--main-green-bg, #a3e635);
+  padding-bottom: 69px; /* <-- Высота твоей навигации */
+  /* Убираем верхний padding здесь, добавляем его в хедер */
+  /* padding-top: 15px; */
 }
 
 .bills-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  /* Добавляем верхний и боковые отступы к хедеру */
+  padding: 15px var(--content-padding, 15px);
+  background-color: var(--main-green-bg, #a3e635); /* Фон хедера */
+  position: sticky; /* Липкий хедер */
+  top: 0;
+  z-index: 10;
 }
 
-/* Стили для переключателей Month/Week */
 .toggle-buttons {
-  display: flex;
-  background-color: #e0e0e0; /* Фон контейнера кнопок */
-  border-radius: 20px; /* Скругление как у контейнера */
-  overflow: hidden; /* Чтобыскругление работало */
-  padding: 3px; /* Небольшой внутренний отступ */
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 4px;
+  display: inline-flex;
 }
 
 .toggle-btn {
-  padding: 6px 16px;
-  border: none;
-  background-color: transparent; /* По умолчанию прозрачные */
-  color: #555;
-  cursor: pointer;
-  font-size: 0.9em;
-  font-weight: 500;
-  border-radius: 18px; /* Скругление кнопок внутри */
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: none; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; color: #fff; font-weight: 500; transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .toggle-btn.active {
-  background-color: #ffffff; /* Белый фон для активной */
-  color: #000000; /* Черный текст для активной */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Небольшая тень */
+  background-color: var(--white-bg, #fff); color: var(--primary-purple, #8b5cf6); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Стили для кнопки "+ Add bill" */
 .add-bill-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px; /* Пространство между иконкой и текстом */
-  padding: 8px 15px;
-  background-color: #f0f0f0; /* Светло-серый фон */
-  border: 1px solid #dcdcdc; /* Тонкая рамка */
-  border-radius: 20px; /* Сильное скругление */
-  color: #333;
-  font-size: 0.9em;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  background-color: var(--primary-purple, #8b5cf6); color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 500; transition: background-color 0.2s ease;
 }
+.add-bill-btn:hover { background-color: #7c3aed; }
 
-.add-bill-btn:hover {
-  background-color: #e6e6e6;
-}
-
-.add-bill-btn svg { /* Стили для иконки внутри кнопки */
-  font-size: 1em;
-}
-
-/* Стили для списка счетов */
 .bills-list {
+  padding: 15px var(--content-padding, 15px); /* Отступы для списка */
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Пространство между элементами списка */
+  gap: 12px;
 }
 
 .bill-item {
-  display: flex;
-  align-items: center;
-  background-color: #ffffff; /* Белый фон элемента */
-  padding: 12px 15px;
-  border-radius: 10px; /* Скругление углов */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Легкая тень */
+  background-color: var(--white-bg, #fff); border-radius: var(--border-radius-medium, 10px); padding: 12px 15px; display: flex; align-items: center; box-shadow: var(--card-shadow-light, 0 2px 5px rgba(0,0,0,0.05)); transition: opacity 0.3s ease;
 }
 
-.bill-icon-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  background-color: #007bff; /* Синий фон иконки (может отличаться в дизайне) */
-  color: white;
-  border-radius: 50%; /* Круглая форма */
-  margin-right: 15px;
-  font-size: 1.2em; /* Размер иконки */
-}
+.bill-item.deleting { opacity: 0.5; pointer-events: none; }
 
-.bill-details {
-  flex-grow: 1; /* Занимает все доступное пространство между иконкой и суммой */
-  display: flex;
-  flex-direction: column;
-}
+.bill-icon-wrapper { background-color: #e0f2fe; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
+.bill-icon-wrapper svg { color: #3b82f6; width: 20px; height: 20px; }
 
-.bill-name {
-  font-weight: 600;
-  font-size: 1em;
-  color: #333;
-}
+.bill-details { flex-grow: 1; overflow: hidden; margin-right: 10px; }
+.bill-name { display: block; font-weight: 500; color: var(--dark-text, #333); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.bill-category-hint { display: block; font-size: 0.8em; color: var(--medium-text, #888); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.bill-category-hint {
-  font-size: 0.8em;
-  color: #888;
+/* --- Стили для контейнера действий --- */
+.bill-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Расстояние между суммой и кнопкой */
+    flex-shrink: 0;
 }
+/* --- Конец стилей контейнера --- */
 
-.bill-amount {
-  font-weight: 600;
-  font-size: 1.1em;
-  color: #333;
-}
+.bill-amount { font-weight: 600; color: var(--dark-text, #333); font-size: 0.95em; white-space: nowrap; }
 
-.no-bills-message {
-    text-align: center;
-    color: #777;
-    margin-top: 30px;
-}
+/* --- Стили для кнопки удаления --- */
+.delete-bill-btn { background: none; border: none; color: var(--medium-text, #aaa); cursor: pointer; padding: 5px; line-height: 1; border-radius: 4px; transition: color 0.2s ease, background-color 0.2s ease; }
+.delete-bill-btn:hover { color: var(--red-expense, #dc3545); background-color: rgba(220, 53, 69, 0.1); }
+.delete-bill-btn:disabled { color: #ccc; cursor: not-allowed; }
+.delete-bill-btn svg { display: block; width: 16px; height: 16px; }
+/* --- Конец стилей кнопки --- */
+
+/* Стили для сообщений */
+.loading-message, .error-message, .no-bills-message { text-align: center; padding: 30px; color: #777; }
+.error-message { color: #dc3545; }
+
+/* Стили для модалки */
+.bill-modal label { display: block; margin-top: 15px; margin-bottom: 5px; font-size: 0.9em; font-weight: 500; color: #555; }
+.bill-modal label:first-of-type { margin-top: 0; }
+.bill-modal .notes-input { resize: vertical; min-height: 60px; }

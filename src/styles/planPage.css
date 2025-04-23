@@ -1,105 +1,107 @@
 /* src/styles/planPage.css */
-@import './variables.css'; /* Подключаем переменные */
+@import './variables.css';
 
 .plan-page-container {
-  /* Используем тот же зеленый фон */
-  background-color: var(--main-green-bg, #AFFF33); /* Замените на ваш цвет/переменную */
-  padding: 15px var(--content-padding, 15px) 0 var(--content-padding, 15px);
-  min-height: 100vh; /* <-- Используйте ВАШУ высоту навигации */
+  background-color: var(--main-green-bg, #a3e635);
+  padding: 30px var(--content-padding, 15px); /* Оставим верхний отступ */
+  min-height: 100vh;
   box-sizing: border-box;
+
+  /* --- ДОБАВЛЯЕМ padding-bottom --- */
+  padding-bottom: 69px; /* <-- Высота навигации */
 }
 
 .plan-content-card {
-  background-color: var(--white-bg, #ffffff);
+  background-color: var(--white-bg, #fff);
   border-radius: var(--border-radius-large, 16px);
-  padding: 25px 20px; /* Отступы внутри карточки */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px; /* Отступ снизу перед плейсхолдером */
+  padding: 25px; /* Увеличим внутренние отступы */
+  box-shadow: var(--card-shadow, 0 4px 12px rgba(0,0,0,0.08));
+  text-align: center; /* Центрируем контент */
 }
 
 .plan-title {
-  font-size: 1.2em; /* Размер заголовка */
-  font-weight: 500;
+  font-size: 1.4em;
+  font-weight: 600;
   color: var(--dark-text, #333);
   margin-top: 0;
-  margin-bottom: 15px;
-  text-align: center; /* Заголовок по центру */
+  margin-bottom: 20px;
 }
 
 .add-goal-button {
-  display: flex; /* Ставим иконку и текст в ряд */
-  align-items: center;
-  justify-content: center; /* Центрируем содержимое кнопки */
-  gap: 8px; /* Расстояние между иконкой и текстом */
-  width: auto; /* Ширина по содержимому */
-  margin: 0 auto 25px auto; /* Центрируем кнопку и добавляем отступ снизу */
-  padding: 9px 18px;
-  background-color: var(--button-light-bg, #e0e0e0); /* Светлый фон кнопки */
+  background-color: var(--primary-purple, #8b5cf6);
+  color: #fff;
   border: none;
-  border-radius: var(--border-radius-medium, 20px); /* Скругление кнопки */
-  color: var(--dark-text, #333);
-  font-size: 0.95em;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1em;
   font-weight: 500;
   cursor: pointer;
+  display: inline-flex; /* Чтобы иконка и текст были рядом */
+  align-items: center;
+  gap: 8px; /* Расстояние между иконкой и текстом */
+  margin-bottom: 30px; /* Отступ под кнопкой */
   transition: background-color 0.2s ease;
 }
-
 .add-goal-button:hover {
-  background-color: var(--button-light-hover-bg, #d4d4d4);
-}
-
-.add-goal-button svg { /* Стили для иконки + */
-  font-size: 1em;
+    background-color: #7c3aed; /* Темнее при наведении */
 }
 
 .goals-list {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Расстояние между целями */
-  margin-bottom: 30px; /* Отступ после списка */
+  gap: 18px; /* Расстояние между целями */
+  text-align: left; /* Выравниваем текст целей по левому краю */
+  margin-bottom: 20px; /* Отступ под списком */
+}
+
+.goal-item {
+  /* Стили для одного элемента цели */
 }
 
 .goal-details {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px; /* Отступ между текстом и прогресс-баром */
+  align-items: baseline;
+  margin-bottom: 8px; /* Отступ до прогресс-бара */
 }
 
 .goal-name {
-  font-size: 1em;
   font-weight: 500;
   color: var(--dark-text, #333);
+  font-size: 1.05em; /* Немного крупнее */
 }
 
 .goal-amount-text {
   font-size: 0.9em;
-  font-weight: 500;
-  color: var(--medium-text, #555);
-  white-space: nowrap;
+  color: var(--medium-text, #777);
 }
 
-/* Контейнер прогресс-бара (серый фон) */
 .progress-bar-container {
-  width: 100%;
-  height: 8px; /* Высота полоски */
-  background-color: var(--progress-bg, #e9ecef); /* Цвет фона полоски */
-  border-radius: 4px; /* Скругление */
-  overflow: hidden; /* Чтобы скругление работало для вложенного бара */
+  background-color: #e9ecef;
+  height: 10px; /* Сделаем чуть толще */
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-/* Сам прогресс-бар (цветной) */
 .progress-bar {
   height: 100%;
-  /* Основной цвет прогресса (фиолетовый из макета) */
-  background-color: var(--progress-fill-color, #8B5CF6); /* Замените на ваш цвет */
-  border-radius: 4px; /* Скругление */
-  transition: width 0.5s ease-out; /* Плавная анимация изменения ширины */
+  background-color: var(--primary-purple, #8b5cf6); /* Фиолетовый прогресс */
+  border-radius: 5px;
+  transition: width 0.5s ease-out;
 }
 
-.future-goals-placeholder {
+/* --- УДАЛЕНО: .future-goals-placeholder не нужен --- */
+
+/* Стили для сообщений */
+.loading-message,
+.error-message,
+.no-history-message { /* Используем существующий стиль */
   text-align: center;
-  color: var(--placeholder-text, #b0b0b0); /* Цвет плейсхолдера */
-  font-size: 0.9em;
-  padding: 20px 0;
+  padding: 20px;
+  color: #777;
+  font-style: italic;
 }
+.error-message { color: #dc3545; }
+
+/* Стили для модалки (используются стили из expenseModal.css) */
+/* Можно добавить специфичные стили, если нужно */

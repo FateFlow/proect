@@ -1,107 +1,146 @@
 // src/components/SettingsModal.jsx
-import React, { useState } from 'react';
-import '../styles/expenseModal.css'; // Базовые стили модалки
-import '../styles/settingsModal.css'; // Новые стили для настроек
+import React, { useState, useEffect } from 'react';
+import apiClient from '../services/api'; // Нужен для сохранения
+import '../styles/expenseModal.css';
+import '../styles/settingsModal.css'; // Подключаем стили
 
-function SettingsModal({ isOpen, onClose }) {
-  // Состояние для выбранной валюты (позже брать из настроек пользователя)
-  const [selectedCurrency, setSelectedCurrency] = useState('BYN');
-  // Состояние для темы (позже брать из настроек/localStorage)
-  const [theme, setTheme] = useState('light'); // 'light' или 'dark'
+// Принимаем новые пропсы
+function SettingsModal({ isOpen, onClose, currentUserData, onSettingsSaved, onLogout }) {
+    // Локальное состояние для редактируемых полей
+    const [editableName, setEditableName] = useState('');
+    const [selectedCurrency, setSelectedCurrency] = useState('');
+    // Состояния для процесса сохранения
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
 
-  // --- Обработчики (пока просто для примера) ---
-  const handleCurrencyChange = (event) => {
-    setSelectedCurrency(event.target.value);
-    console.log('Currency selected:', event.target.value);
-    // TODO: Сохранить выбор пользователя (localStorage/API)
-    // TODO: Обновить отображение валюты во всем приложении
-  };
+    // Инициализация состояний при открытии или изменении данных пользователя
+    useEffect(() => {
+        if (isOpen && currentUserData) {
+            setEditableName(currentUserData.name || '');
+            setSelectedCurrency(currentUserData.currency || 'BYN'); // Используем BYN по умолчанию
+            setSaveError(null); // Сброс ошибки при открытии
+            setIsSaving(false); // Сброс флага сохранения
+        }
+    }, [isOpen, currentUserData]);
 
-  const handleThemeToggle = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    console.log('Theme toggled to:', newTheme);
-    // TODO: Применить стили темы (например, добавить класс к body или использовать Context)
-    // document.body.className = newTheme + '-theme'; // Простой пример
-  };
+    // Обработчик сохранения изменений
+    const handleSaveChanges = async () => {
+        setIsSaving(true);
+        setSaveError(null);
 
-  const handleChangePassword = () => {
-    console.log('Change Password clicked (Not implemented)');
-    // TODO: Открыть новую модалку/страницу для смены пароля
-    onClose(); // Закрываем эту модалку для примера
-  };
+        // Собираем только те поля, которые изменились
+        const updates = {};
+        if (editableName !== currentUserData.name) {
+            updates.name = editableName.trim();
+        }
+        if (selectedCurrency !== currentUserData.currency) {
+            updates.currency = selectedCurrency;
+        }
 
-  const handleNotifications = () => {
-    console.log('Notification Preferences clicked (Not implemented)');
-    // TODO: Открыть страницу/модалку настроек уведомлений
-     onClose(); // Закрываем эту модалку для примера
-  };
-  // --- Конец обработчиков ---
+        // Если нет изменений, просто закрываем окно
+        if (Object.keys(updates).length === 0) {
+            console.log("No changes detected.");
+            onClose();
+            return;
+        }
 
-  if (!isOpen) {
-    return null;
-  }
+        // Валидация имени (если нужно)
+        if (updates.name && updates.name.length === 0) {
+             setSaveError("Name cannot be empty.");
+             setIsSaving(false);
+             return;
+        }
 
-  const handleContentClick = (e) => {
-    e.stopPropagation();
-  };
+        console.log("Saving profile updates:", updates);
+        try {
+            // Отправляем PATCH запрос
+            const response = await apiClient.patch('/user/profile', updates);
+            console.log("Profile updated successfully:", response.data);
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content-new settings-modal-content" onClick={handleContentClick}>
+             // Сохраняем новую валюту в localStorage СРАЗУ ЖЕ
+             if (updates.currency) {
+                localStorage.setItem('userCurrency', updates.currency);
+                console.log(`Currency saved to localStorage: ${updates.currency}`);
+            }
 
-        <h4 className="settings-modal-title">Settings</h4>
-        <p className="settings-modal-description">
-          Here you can adjust application settings.
-        </p>
+            onSettingsSaved(); // Вызываем колбэк для обновления AccountPage
+            onClose();         // Закрываем модалку
+        } catch (err) {
+            console.error("Failed to save settings:", err);
+            setSaveError(err.response?.data?.message || err.message || 'Failed to save settings.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
-        {/* --- Настройки в виде списка --- */}
-        <div className="settings-list">
 
-          {/* Настройка Валюты */}
-          <div className="setting-item">
-            <label htmlFor="currency-select" className="setting-label">Default Currency:</label>
-            <select
-              id="currency-select"
-              className="setting-select"
-              value={selectedCurrency}
-              onChange={handleCurrencyChange}
-            >
-              <option value="BYN">BYN</option>
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-              {/* Добавить другие валюты по необходимости */}
-            </select>
-          </div>
+    if (!isOpen) { return null; }
 
-          {/* Настройка Темы */}
-          <div className="setting-item">
-            <span className="setting-label">Theme:</span>
-            <button onClick={handleThemeToggle} className="theme-toggle-button">
-              Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
-            </button>
-            {/* Можно использовать реальный <input type="checkbox"> и стилизовать его как toggle */}
-          </div>
+    const handleContentClick = (e) => e.stopPropagation();
 
-          {/* Кнопка Смены Пароля */}
-          <button onClick={handleChangePassword} className="setting-action-button password-button">
-             Change Password (Soon)
-          </button>
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content-new settings-modal-content" onClick={handleContentClick}>
+                <h4 className="settings-modal-title">Settings</h4>
 
-           {/* Кнопка Настроек Уведомлений */}
-          <button onClick={handleNotifications} className="setting-action-button notification-button">
-             Notification Preferences (Soon)
-          </button>
+                <div className="settings-list">
+                    {/* Редактирование Имени */}
+                    <div className="setting-item">
+                        <label htmlFor="profileName" className="setting-label">Name:</label>
+                        <input
+                            id="profileName"
+                            type="text"
+                            className="setting-input" // Новый класс для инпутов настроек
+                            value={editableName}
+                            onChange={(e) => setEditableName(e.target.value)}
+                            disabled={isSaving}
+                        />
+                    </div>
 
+                    {/* Выбор Валюты */}
+                    <div className="setting-item">
+                        <label htmlFor="currency-select" className="setting-label">Default Currency:</label>
+                        <select
+                            id="currency-select"
+                            className="setting-select" // Используем старый класс для селекта
+                            value={selectedCurrency}
+                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                            disabled={isSaving}
+                        >
+                            <option value="BYN">BYN</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+
+                     {/* Отображение ошибки сохранения */}
+                     {saveError && <p className="error-message-new">{saveError}</p>}
+
+                    {/* Кнопка Сохранения */}
+                    <button
+                        onClick={handleSaveChanges}
+                        className="setting-action-button save-button" // Новый класс
+                        disabled={isSaving}
+                    >
+                        {isSaving ? 'Saving...' : 'Save Changes'}
+                    </button>
+
+                     {/* Кнопка Выхода */}
+                     <button
+                        onClick={onLogout} // Используем функцию из пропсов
+                        className="setting-action-button logout-button" // Новый класс
+                        disabled={isSaving} // Блокируем во время сохранения
+                     >
+                        Logout
+                     </button>
+
+                </div>
+
+                {/* Кнопку Close убираем, т.к. есть Save и Логаут */}
+                {/* <button className="done-btn-new" onClick={onClose}> Close </button> */}
+            </div>
         </div>
-        {/* --- Конец списка настроек --- */}
-
-        <button className="done-btn-new" onClick={onClose}>
-          Close
-        </button>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default SettingsModal;

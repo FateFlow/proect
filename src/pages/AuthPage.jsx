@@ -1,38 +1,36 @@
 // src/pages/AuthPage.jsx
 import React, { useState } from 'react';
-import '../styles/authPage.css'; // Стили для этой страницы
+import { useNavigate } from 'react-router-dom'; // 1. Импортируем useNavigate
+import apiClient from '../services/api'; // 1. Импортируем наш apiClient
+import '../styles/authPage.css';
+
 // Можно добавить иконки, если нужно
 // import { FiMail, FiLock, FiUser } from 'react-icons/fi';
 
 function AuthPage() {
-  // Состояние для переключения режима Вход/Регистрация
   const [isLoginMode, setIsLoginMode] = useState(true);
-  // Состояния для полей ввода
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState(''); // Только для регистрации
-  // Состояние для ошибок
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
-  // Состояние загрузки (для будущего)
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // 2. Получаем функцию навигации
 
-  // Функция переключения режима
   const switchModeHandler = () => {
     setIsLoginMode((prevMode) => !prevMode);
-    setError(''); // Сбрасываем ошибку при переключении
-    // Сбрасываем поля при переключении для чистоты
+    setError('');
     setEmail('');
     setPassword('');
     setName('');
   };
 
-  // Обработчик отправки формы
-  const submitHandler = (event) => {
-    event.preventDefault(); // Предотвращаем перезагрузку страницы
-    setError(''); // Сброс предыдущей ошибки
-    setLoading(true); // Показываем загрузку (в будущем)
+  // 3. Модифицируем submitHandler
+  const submitHandler = async (event) => { // Делаем функцию async
+    event.preventDefault();
+    setError(''); // Сброс ошибки перед новым запросом
+    setLoading(true);
 
-    // Базовая валидация
+    // Базовая валидация (оставляем как есть)
     if (!email.includes('@') || password.length < 6) {
       setError('Invalid email or password (must be at least 6 chars).');
       setLoading(false);
@@ -44,86 +42,120 @@ function AuthPage() {
       return;
     }
 
-    // --- Логика для БУДУЩЕГО БЭКЕНДА ---
-    if (isLoginMode) {
-      console.log('Logging in:', { email, password });
-      // TODO: Отправить запрос на /api/auth/login
-      // fetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }), ... })
-    } else {
-      console.log('Registering:', { name, email, password });
-      // TODO: Отправить запрос на /api/auth/register
-      // fetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }), ... })
-    }
-    // ---- Конец логики для бэкенда ----
+    try {
+      let response;
+      if (isLoginMode) {
+        // --- Логин ---
+        console.log('Attempting login:', { email, password });
+        response = await apiClient.post('/auth/login', {
+          email,
+          password,
+        });
+        console.log('Login successful:', response.data);
+      } else {
+        // --- Регистрация ---
+        console.log('Attempting registration:', { name, email, password });
+        response = await apiClient.post('/auth/register', {
+          name, // Убедись, что твой бэкенд ожидает поле 'name'
+          email,
+          password,
+        });
+        console.log('Registration successful:', response.data);
+         // Возможно, после успешной регистрации, стоит сразу переключить на логин
+         // или если бэкенд возвращает токен при регистрации, можно сразу залогинить
+      }
 
-    // Имитация запроса (удалить позже)
-    setTimeout(() => {
-        console.log("Request finished");
-        setLoading(false);
-        // setError('Login/Registration failed (placeholder)'); // Пример ошибки
-    }, 1500);
+      // --- Обработка УСПЕШНОГО ответа (и для логина, и для регистрации, если она возвращает токен) ---
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token); // Сохраняем токен
+        // Перенаправляем на главную страницу (укажи правильный путь, например '/menu' или '/')
+        navigate('/', { replace: true }); // replace: true - чтобы нельзя было вернуться назад на страницу логина
+      } else {
+         // Если регистрация не вернула токен, можно просто переключить на логин
+         if (!isLoginMode) {
+            console.log('Registration successful, please login.');
+            setIsLoginMode(true); // Переключаем на форму логина
+            setError('Registration successful! Please log in.'); // Даем фидбек
+            // Очищаем поля формы регистрации
+            setName('');
+            setEmail(''); // Можно оставить email, если хотим удобства
+            setPassword('');
+         } else {
+             // Неожиданный ответ от сервера при логине (без токена)
+             throw new Error('Authentication failed: No token received.');
+         }
+      }
+
+    } catch (err) {
+      // --- Обработка ОШИБКИ ---
+      console.error('Authentication error:', err.response || err.message || err);
+      // Пытаемся получить сообщение об ошибке от бэкенда, иначе показываем общее сообщение
+      const errorMessage = err.response?.data?.message || // Ошибка от нашего API
+                         err.message || // Общая ошибка (напр. сетевая)
+                         'Authentication failed. Please check your details or try again later.';
+      setError(errorMessage);
+    } finally {
+      // --- Выполняется всегда (после try или catch) ---
+      setLoading(false); // Убираем индикатор загрузки
+    }
   };
 
   return (
-    <div className="auth-page-container"> {/* Контейнер всей страницы */}
-      <div className="auth-form-card">    {/* "Карточка" формы */}
+    <div className="auth-page-container">
+      <div className="auth-form-card">
         <h1>{isLoginMode ? 'Login' : 'Register'}</h1>
-
         <form onSubmit={submitHandler}>
-          {/* Поле Name (только для регистрации) */}
           {!isLoginMode && (
             <div className="input-box">
-              {/* <FiUser className="input-icon" /> */}
               <input
                 type="text"
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required // Делает поле обязательным, помогает CSS :valid
+                required
+                disabled={loading} // Блокируем поля во время загрузки
               />
               <label htmlFor="name">Name</label>
             </div>
           )}
-
-          {/* Поле Email */}
           <div className="input-box">
-            {/* <FiMail className="input-icon" /> */}
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading} // Блокируем поля во время загрузки
             />
             <label htmlFor="email">Email</label>
           </div>
-
-          {/* Поле Password */}
           <div className="input-box">
-            {/* <FiLock className="input-icon" /> */}
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6} // Валидация на мин. длину
+              minLength={6}
+              disabled={loading} // Блокируем поля во время загрузки
             />
             <label htmlFor="password">Password</label>
           </div>
 
-          {/* Отображение ошибки */}
           {error && <p className="error-message">{error}</p>}
 
-          {/* Кнопка Submit */}
           <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Sending...' : (isLoginMode ? 'Login' : 'Create Account')}
+            {loading ? 'Processing...' : (isLoginMode ? 'Login' : 'Create Account')}
           </button>
 
-          {/* Ссылка для переключения режима */}
           <p className="switch-mode-text">
             {isLoginMode ? "Don't have an account?" : 'Already have an account?'}
-            <button type="button" onClick={switchModeHandler} className="switch-mode-button">
+            <button
+              type="button"
+              onClick={switchModeHandler}
+              className="switch-mode-button"
+              disabled={loading} // Блокируем переключение во время загрузки
+            >
               {isLoginMode ? 'Register' : 'Login'}
             </button>
           </p>

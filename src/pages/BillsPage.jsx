@@ -1,134 +1,103 @@
-import React, { useState } from 'react';
-import { FaHome, FaPlus } from 'react-icons/fa';
-import '../styles/billsPage.css';    // Убедитесь, что путь верный
-import '../styles/expenseModal.css'; // Убедитесь, что путь верный
-
-const sampleBillsData = [
-    { id: 1, icon: FaHome, name: 'Rent', category: 'living', amount: 500, period: 'month' },
-    { id: 2, icon: FaHome, name: 'Internet', category: 'utilities', amount: 50, period: 'month' },
-    { id: 3, icon: FaHome, name: 'Groceries', category: 'food', amount: 100, period: 'week' },
-];
+// src/pages/BillsPage.jsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { FaHome, FaPlus, FaTrashAlt } from 'react-icons/fa';
+import apiClient from '../services/api';
+import '../styles/billsPage.css';
+import '../styles/expenseModal.css';
+// --- Убедимся, что импорт есть ---
+import { formatCurrency } from '../utils/formatting';
 
 function BillsPage() {
     const [activeTab, setActiveTab] = useState('month');
-    const [bills, setBills] = useState(sampleBillsData);
+    const [bills, setBills] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [deletingBillId, setDeletingBillId] = useState(null);
+
+    // Состояния модалки добавления
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddingBill, setIsAddingBill] = useState(false);
+    const [addBillError, setAddBillError] = useState(null);
+    const [newBillName, setNewBillName] = useState('');
     const [newBillAmount, setNewBillAmount] = useState('');
-    const [newBillCategoryInput, setNewBillCategoryInput] = useState('');
-    const [modalError, setModalError] = useState('');
+    const [newBillDueDate, setNewBillDueDate] = useState('');
+    const [newBillCategory, setNewBillCategory] = useState('');
+    const [newBillNotes, setNewBillNotes] = useState('');
 
-    const filteredBills = bills.filter(bill => bill.period === activeTab);
+    // Функция загрузки счетов
+    const fetchBills = useCallback(async () => {
+        setIsLoading(true); setError(null);
+        try {
+            const response = await apiClient.get('/bills', { params: { period: activeTab, limit: 100 } });
+            if (response.data?.success && Array.isArray(response.data.bills)) { setBills(response.data.bills); }
+            else { throw new Error('Invalid data received for bills'); }
+        } catch (err) { console.error(`Failed to fetch ${activeTab} bills:`, err); setError(err.response?.data?.message || err.message || 'Не удалось загрузить счета.'); setBills([]); }
+        finally { setIsLoading(false); }
+    }, [activeTab]);
 
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
-        setNewBillAmount('');
-        setNewBillCategoryInput('');
-        setModalError('');
+    useEffect(() => { fetchBills(); }, [fetchBills]);
+
+    // Обработчики модалки добавления
+    const handleOpenModal = () => { setIsModalOpen(true); setNewBillName(''); setNewBillAmount(''); setNewBillDueDate(''); setNewBillCategory(''); setNewBillNotes(''); setAddBillError(null); };
+    const handleCloseModal = () => setIsModalOpen(false);
+    const handleAddBillSubmit = async () => {
+        setAddBillError(null);
+        if (!newBillName.trim() || !newBillAmount.trim() || !newBillDueDate.trim()) { setAddBillError('Name, Amount, and Due Date are required.'); return; }
+        const amount = parseFloat(newBillAmount); if (isNaN(amount) || amount <= 0) { setAddBillError('Please enter a valid positive amount.'); return; }
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/; if (!dateRegex.test(newBillDueDate)) { setAddBillError('Due date must be in YYYY-MM-DD format.'); return; }
+        setIsAddingBill(true);
+        try {
+            const newBillData = { name: newBillName.trim(), amount: amount, due_date: newBillDueDate, period: activeTab, category: newBillCategory.trim() || null, notes: newBillNotes.trim() || null };
+            await apiClient.post('/bills', newBillData); handleCloseModal(); fetchBills();
+        } catch (err) { console.error("Failed to add bill:", err); setAddBillError(err.response?.data?.message || err.message || 'Failed to add bill.'); }
+        finally { setIsAddingBill(false); }
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleAddBill = () => {
-        setModalError('');
-        if (!newBillAmount.trim() || !newBillCategoryInput.trim()) {
-            setModalError('Please enter both amount and category.');
-            return;
-        }
-        const amount = parseFloat(newBillAmount);
-        if (isNaN(amount) || amount <= 0) {
-            setModalError('Please enter a valid positive amount.');
-            return;
-        }
-        const newBill = {
-            id: Date.now(),
-            icon: FaHome,
-            name: newBillCategoryInput.trim(),
-            category: newBillCategoryInput.trim(),
-            amount: amount,
-            period: activeTab,
-        };
-        setBills(prevBills => [...prevBills, newBill]);
-        handleCloseModal();
+    // Функция удаления счета
+    const handleDeleteBill = async (billId) => {
+        if (!window.confirm(`Are you sure you want to delete this bill (ID: ${billId})?`)) { return; }
+        setDeletingBillId(billId); setError(null);
+        try {
+            await apiClient.delete(`/bills/${billId}`);
+            setBills(prevBills => prevBills.filter(bill => bill.id !== billId)); // Оптимистичное обновление
+        } catch (err) { console.error(`Failed to delete bill ${billId}:`, err); setError(err.response?.data?.message || err.message || 'Failed to delete bill.'); }
+        finally { setDeletingBillId(null); }
     };
 
     return (
         <div className="bills-page-container">
-
-            {/* Верхняя панель */}
+            {/* Хедер с кнопками */}
             <div className="bills-header">
-                <div className="toggle-buttons">
-                    <button
-                        className={`toggle-btn ${activeTab === 'month' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('month')}
-                    >
-                        Per month
-                    </button>
-                    <button
-                        className={`toggle-btn ${activeTab === 'week' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('week')}
-                    >
-                        Per week
-                    </button>
-                </div>
-                <button className="add-bill-btn" onClick={handleOpenModal}>
-                    <FaPlus /> Add bill
-                </button>
+                <div className="toggle-buttons"> <button className={`toggle-btn ${activeTab === 'month' ? 'active' : ''}`} onClick={() => setActiveTab('month')}> Per month </button> <button className={`toggle-btn ${activeTab === 'week' ? 'active' : ''}`} onClick={() => setActiveTab('week')}> Per week </button> </div>
+                <button className="add-bill-btn" onClick={handleOpenModal}> <FaPlus /> Add bill </button>
             </div>
 
             {/* Список счетов */}
             <div className="bills-list">
-                {filteredBills.length > 0 ? (
-                    filteredBills.map((bill) => (
-                        <div key={bill.id} className="bill-item">
-                            <div className="bill-icon-wrapper">
-                                <bill.icon />
+                 {isLoading && <p className="loading-message">Loading bills...</p>}
+                 {!isLoading && error && !deletingBillId && <p className="error-message">{error}</p>}
+                 {!isLoading && !error && bills.length === 0 && <p className="no-bills-message">No bills found for this period.</p>}
+                 {!isLoading && !error && bills.length > 0 && (
+                    bills.map((bill) => (
+                        <div key={bill.id} className={`bill-item ${deletingBillId === bill.id ? 'deleting' : ''}`}>
+                            <div className="bill-icon-wrapper"> <FaHome /> </div>
+                            <div className="bill-details"> <span className="bill-name">{bill.name}</span> <span className="bill-category-hint">{bill.category || 'No category'}</span> </div>
+                            <div className="bill-actions">
+                                <span className="bill-amount">
+                                    {/* --- ИСПОЛЬЗУЕМ formatCurrency --- */}
+                                    {formatCurrency(bill.amount)}
+                                </span>
+                                <button className="delete-bill-btn" onClick={() => handleDeleteBill(bill.id)} disabled={deletingBillId === bill.id} > {deletingBillId === bill.id ? '...' : <FaTrashAlt />} </button>
                             </div>
-                            <div className="bill-details">
-                                <span className="bill-name">{bill.name}</span>
-                                <span className="bill-category-hint">{bill.category}</span>
-                            </div>
-                            <span className="bill-amount">{bill.amount}$</span>
                         </div>
                     ))
-                ) : (
-                    <p className="no-bills-message">No bills for the selected period.</p>
-                )}
+                 )}
             </div>
 
-            {/* --- Модальное окно (без комментариев внутри) --- */}
+            {/* Модальное окно добавления счета */}
             {isModalOpen && (
-                <div className="modal-overlay" onClick={handleCloseModal}>
-                    <div className="modal-content-new" onClick={(e) => e.stopPropagation()}>
-                        <input
-                            type="number"
-                            className="amount-input"
-                            placeholder="Enter the amount of money"
-                            value={newBillAmount}
-                            onChange={(e) => setNewBillAmount(e.target.value)}
-                            autoFocus
-                        />
-                        <h4 className="category-title">Category</h4>
-                        <input
-                            type="text"
-                            className="amount-input"
-                            placeholder="Enter category name"
-                            value={newBillCategoryInput}
-                            onChange={(e) => setNewBillCategoryInput(e.target.value)}
-                        />
-                        {modalError && <p className="error-message-new">{modalError}</p>}
-                        <button className="done-btn-new" onClick={handleAddBill}>
-                            Done
-                        </button>
-                    </div>
-                </div>
+                 <div className="modal-overlay" onClick={handleCloseModal}> <div className="modal-content-new bill-modal" onClick={(e) => e.stopPropagation()}> <h3 className="category-title" style={{ textAlign: 'center', marginBottom: '20px' }}>Add New Bill ({activeTab})</h3> <label htmlFor="billName">Bill Name*</label> <input id="billName" type="text" className="amount-input" placeholder="e.g., Rent, Netflix" value={newBillName} onChange={(e) => setNewBillName(e.target.value)} disabled={isAddingBill} autoFocus /> <label htmlFor="billAmount">Amount*</label> <input id="billAmount" type="number" inputMode="decimal" step="0.01" className="amount-input" placeholder="0.00" value={newBillAmount} onChange={(e) => setNewBillAmount(e.target.value)} disabled={isAddingBill} /> <label htmlFor="billDueDate">Due Date*</label> <input id="billDueDate" type="date" className="amount-input" value={newBillDueDate} onChange={(e) => setNewBillDueDate(e.target.value)} disabled={isAddingBill} /> <label htmlFor="billCategory">Category</label> <input id="billCategory" type="text" className="amount-input" placeholder="e.g., Housing, Subscriptions" value={newBillCategory} onChange={(e) => setNewBillCategory(e.target.value)} disabled={isAddingBill} /> <label htmlFor="billNotes">Notes</label> <textarea id="billNotes" className="amount-input notes-input" placeholder="Any details..." value={newBillNotes} onChange={(e) => setNewBillNotes(e.target.value)} disabled={isAddingBill} rows="2"></textarea> {addBillError && <p className="error-message-new">{addBillError}</p>} <button className="done-btn-new" onClick={handleAddBillSubmit} disabled={isAddingBill}> {isAddingBill ? 'Adding...' : 'Add Bill'} </button> </div> </div>
             )}
-            {/* --- Конец Модального окна --- */}
-
-            {/* Компенсация высоты навигации */}
-            <div style={{ height: '80px' }}></div>
-
         </div>
     );
 }
