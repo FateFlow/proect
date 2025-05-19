@@ -1,143 +1,121 @@
 // src/components/SettingsModal.jsx
 import React, { useState, useEffect } from 'react';
-import apiClient from '../services/api'; // Нужен для сохранения
+import apiClient from '../services/api';
+// Импортируем useCurrency для selectedCurrency и setSelectedCurrency,
+// BASE_DB_CURRENCY для значения по умолчанию.
+// SUPPORTED_CURRENCIES больше не нужен для генерации списка.
+import { useCurrency, BASE_DB_CURRENCY } from '../contexts/CurrencyContext';
 import '../styles/expenseModal.css';
-import '../styles/settingsModal.css'; // Подключаем стили
+import '../styles/settingsModal.css';
 
-// Принимаем новые пропсы
 function SettingsModal({ isOpen, onClose, currentUserData, onSettingsSaved, onLogout }) {
-    // Локальное состояние для редактируемых полей
+    const {
+        selectedCurrency: contextSelectedCurrency,
+        setSelectedCurrency: setContextSelectedCurrency,
+    } = useCurrency();
+
     const [editableName, setEditableName] = useState('');
-    const [selectedCurrency, setSelectedCurrency] = useState('');
-    // Состояния для процесса сохранения
+    // modalSelectedCurrencyUI теперь всегда будет BYN, так как других опций нет
+    // Но мы все равно будем его синхронизировать с контекстом, на случай если в будущем вернем другие валюты
+    const [modalSelectedCurrencyUI, setModalSelectedCurrencyUI] = useState(BASE_DB_CURRENCY);
+
     const [isSaving, setIsSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
 
-    // Инициализация состояний при открытии или изменении данных пользователя
     useEffect(() => {
-        if (isOpen && currentUserData) {
-            setEditableName(currentUserData.name || '');
-            setSelectedCurrency(currentUserData.currency || 'BYN'); // Используем BYN по умолчанию
-            setSaveError(null); // Сброс ошибки при открытии
-            setIsSaving(false); // Сброс флага сохранения
+        if (isOpen) {
+            const nameToSet = currentUserData?.name || '';
+            setEditableName(nameToSet);
+            // Устанавливаем валюту в UI модалки из контекста (которая по идее должна быть BYN или тем, что было сохранено)
+            // Но так как выбор будет только BYN, это значение все равно установится в BYN при сохранении, если отличается.
+            setModalSelectedCurrencyUI(contextSelectedCurrency || BASE_DB_CURRENCY);
+            console.log(`SettingsModal (BYN ONLY MODE): Initializing. Name: '${nameToSet}', Currency UI: '${contextSelectedCurrency || BASE_DB_CURRENCY}'`);
+            setSaveError(null);
+            setIsSaving(false);
         }
-    }, [isOpen, currentUserData]);
+    }, [isOpen, currentUserData, contextSelectedCurrency]);
 
-    // Обработчик сохранения изменений
     const handleSaveChanges = async () => {
         setIsSaving(true);
         setSaveError(null);
 
-        // Собираем только те поля, которые изменились
         const updates = {};
-        if (editableName !== currentUserData.name) {
-            updates.name = editableName.trim();
-        }
-        if (selectedCurrency !== currentUserData.currency) {
-            updates.currency = selectedCurrency;
-        }
+        const currentNameInDb = currentUserData?.name || '';
+        const trimmedEditableName = editableName.trim();
 
-        // Если нет изменений, просто закрываем окно
-        if (Object.keys(updates).length === 0) {
-            console.log("No changes detected.");
-            onClose();
-            return;
+        if (trimmedEditableName !== currentNameInDb) {
+            updates.name = trimmedEditableName;
         }
 
-        // Валидация имени (если нужно)
-        if (updates.name && updates.name.length === 0) {
-             setSaveError("Name cannot be empty.");
-             setIsSaving(false);
-             return;
-        }
+        // Валюта, выбранная в модалке, теперь всегда будет BYN, так как других опций нет.
+        // Но для консистентности, если вдруг contextSelectedCurrency был чем-то другим (например, из старого localStorage),
+        // мы все равно обновим его на BYN.
+        const newSelectedCurrencyInModal = BASE_DB_CURRENCY; // <--- Всегда BYN
 
-        console.log("Saving profile updates:", updates);
-        try {
-            // Отправляем PATCH запрос
-            const response = await apiClient.patch('/user/profile', updates);
-            console.log("Profile updated successfully:", response.data);
-
-             // Сохраняем новую валюту в localStorage СРАЗУ ЖЕ
-             if (updates.currency) {
-                localStorage.setItem('userCurrency', updates.currency);
-                console.log(`Currency saved to localStorage: ${updates.currency}`);
+        if (updates.name || newSelectedCurrencyInModal !== contextSelectedCurrency) {
+            if (updates.name) {
+                try {
+                    console.log("SettingsModal (BYN ONLY MODE): Saving profile name update:", { name: updates.name });
+                    await apiClient.patch('/user/profile', { name: updates.name });
+                    console.log("SettingsModal (BYN ONLY MODE): Profile name updated successfully.");
+                } catch (err) {
+                    console.error("SettingsModal (BYN ONLY MODE): Failed to save name:", err);
+                    setSaveError(err.response?.data?.message || err.message || 'Failed to save name.');
+                    setIsSaving(false);
+                    return;
+                }
             }
 
-            onSettingsSaved(); // Вызываем колбэк для обновления AccountPage
-            onClose();         // Закрываем модалку
-        } catch (err) {
-            console.error("Failed to save settings:", err);
-            setSaveError(err.response?.data?.message || err.message || 'Failed to save settings.');
-        } finally {
-            setIsSaving(false);
+            if (newSelectedCurrencyInModal !== contextSelectedCurrency) {
+                console.log(`SettingsModal (BYN ONLY MODE): Setting currency in context to: '${newSelectedCurrencyInModal}'.`);
+                setContextSelectedCurrency(newSelectedCurrencyInModal);
+            }
+            
+            if (onSettingsSaved) onSettingsSaved();
+            onClose();
+
+        } else {
+            console.log("SettingsModal (BYN ONLY MODE): No changes detected.");
+            onClose();
         }
+        setIsSaving(false);
     };
 
-
     if (!isOpen) { return null; }
-
     const handleContentClick = (e) => e.stopPropagation();
 
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content-new settings-modal-content" onClick={handleContentClick}>
                 <h4 className="settings-modal-title">Settings</h4>
-
                 <div className="settings-list">
-                    {/* Редактирование Имени */}
                     <div className="setting-item">
                         <label htmlFor="profileName" className="setting-label">Name:</label>
                         <input
-                            id="profileName"
-                            type="text"
-                            className="setting-input" // Новый класс для инпутов настроек
-                            value={editableName}
-                            onChange={(e) => setEditableName(e.target.value)}
-                            disabled={isSaving}
+                            id="profileName" type="text" className="setting-input"
+                            value={editableName} onChange={(e) => setEditableName(e.target.value)} disabled={isSaving}
                         />
                     </div>
-
-                    {/* Выбор Валюты */}
                     <div className="setting-item">
-                        <label htmlFor="currency-select" className="setting-label">Default Currency:</label>
+                        <label htmlFor="currency-select" className="setting-label">Display Currency Preference:</label>
                         <select
-                            id="currency-select"
-                            className="setting-select" // Используем старый класс для селекта
-                            value={selectedCurrency}
-                            onChange={(e) => setSelectedCurrency(e.target.value)}
-                            disabled={isSaving}
+                            id="currency-select" className="setting-select"
+                            value={modalSelectedCurrencyUI} // Это будет всегда BYN, так как других опций нет
+                            // onChange больше не нужен, так как выбор заблокирован на BYN
+                            disabled={true} // <--- Делаем селект неактивным
                         >
-                            <option value="BYN">BYN</option>
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
+                            {/* Жестко задаем одну опцию BYN */}
+                            <option value={BASE_DB_CURRENCY}>{BASE_DB_CURRENCY}</option>
                         </select>
                     </div>
-
-                     {/* Отображение ошибки сохранения */}
-                     {saveError && <p className="error-message-new">{saveError}</p>}
-
-                    {/* Кнопка Сохранения */}
-                    <button
-                        onClick={handleSaveChanges}
-                        className="setting-action-button save-button" // Новый класс
-                        disabled={isSaving}
-                    >
+                    {saveError && <p className="error-message-new">{saveError}</p>}
+                    <button onClick={handleSaveChanges} className="setting-action-button save-button" disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Save Changes'}
                     </button>
-
-                     {/* Кнопка Выхода */}
-                     <button
-                        onClick={onLogout} // Используем функцию из пропсов
-                        className="setting-action-button logout-button" // Новый класс
-                        disabled={isSaving} // Блокируем во время сохранения
-                     >
+                    <button onClick={onLogout} className="setting-action-button logout-button" disabled={isSaving}>
                         Logout
-                     </button>
-
+                    </button>
                 </div>
-
-                {/* Кнопку Close убираем, т.к. есть Save и Логаут */}
-                {/* <button className="done-btn-new" onClick={onClose}> Close </button> */}
             </div>
         </div>
     );

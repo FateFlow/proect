@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS Users (
     password_hash VARCHAR(255) NOT NULL, -- Храним хеш пароля, не сам пароль!
     name VARCHAR(100),
     phone VARCHAR(20),
-    currency VARCHAR(3) NOT NULL DEFAULT 'RUB', -- Изменил на RUB, как более вероятно для РФ, можешь поменять на BYN или оставить
+    currency VARCHAR(3) NOT NULL DEFAULT 'BYN', -- Изменил на RUB, как более вероятно для РФ, можешь поменять на BYN или оставить
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

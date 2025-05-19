@@ -7,7 +7,7 @@
  * @param {string} [options.currencyCode=localStorage or 'BYN'] - Принудительно использовать этот код валюты (USD, EUR, BYN).
  * @returns {string} Отформатированная строка (напр., "€ 123.45", "$ 50.00", "100.00 BYN").
  */
-export const formatCurrency = (amount, options = {}) => {
+/*export const formatCurrency = (amount, options = {}) => {
     const defaultCurrency = 'BYN'; // Валюта по умолчанию
     // Читаем сохраненную валюту ИЛИ берем опцию ИЛИ берем дефолт
     const storedCurrency = localStorage.getItem('userCurrency') || defaultCurrency;
@@ -57,4 +57,4 @@ export const formatCurrency = (amount, options = {}) => {
         // Вернем просто с символом
         return `${symbol} ${numericAmount.toFixed(2)}`;
     }
-};
+};*/

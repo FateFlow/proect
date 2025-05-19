@@ -103,5 +103,45 @@
 }
 .error-message { color: #dc3545; }
 
-/* Стили для модалки (используются стили из expenseModal.css) */
-/* Можно добавить специфичные стили, если нужно */
+.goal-info-container {
+  display: flex;
+  justify-content: space-between; /* Размещает детали слева, кнопку справа */
+  align-items: center; /* Выравнивает по центру вертикально */
+  width: 100%; /* Занимает всю ширину goal-item перед прогресс-баром */
+  margin-bottom: 8px; /* Отступ до прогресс-бара, если он под этим контейнером */
+}
+
+.goal-details {
+  /* display: flex; */ /* Если нужно, чтобы имя и сумма были в строку */
+  /* flex-direction: column; */ /* Или так, если они друг под другом */
+  flex-grow: 1; /* Позволяет этому блоку занять доступное пространство */
+}
+
+.add-funds-to-goal-btn {
+  background-color: var(--primary-accent-color, #8b5cf6); /* Цвет кнопки, подбери свой */
+  color: white;
+  border: none;
+  padding: 6px 10px; /* Уменьшим паддинги для компактности */
+  border-radius: var(--border-radius-small, 6px);
+  cursor: pointer;
+  font-size: 0.9em; /* Можно уменьшить шрифт */
+  margin-left: 10px; /* Отступ от деталей цели */
+  transition: background-color 0.2s ease;
+  display: flex; /* Для выравнивания иконки, если она будет с текстом */
+  align-items: center;
+  justify-content: center;
+}
+
+.add-funds-to-goal-btn svg { /* Стили для иконки внутри кнопки */
+  /* margin-right: 5px; */ /* Если будет текст рядом с иконкой */
+  font-size: 1em; /* Размер иконки */
+}
+
+.add-funds-to-goal-btn:hover {
+  background-color: var(--primary-accent-hover-color, #7c3aed); /* Цвет при наведении */
+}
+
+.add-funds-to-goal-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -2,19 +2,11 @@
 @import './variables.css'; /* Подключаем переменные, если они используются */
 
 .report-page-container {
-  background-color: var(--app-background, #f0f0f0);
-  padding: 15px var(--content-padding, 15px) 0 var(--content-padding, 15px);
+  padding: 15px var(--content-padding, 15px) 69px var(--content-padding, 15px); /* Добавлен padding-bottom для нав. панели */
   min-height: 100vh;
   box-sizing: border-box;
   background-color: var(--main-green-bg, #a3e635);
-
-  /* --- ДОБАВЛЕНО/ПРОВЕРЕНО: Отступ для навигации --- */
-  padding-bottom: 69px; /* Убедись, что это высота твоей навигации! */
-  /* --- КОНЕЦ ИЗМЕНЕНИЙ --- */
 }
-
-/* --- УДАЛЕНО: Псевдо-хедер не нужен --- */
-/* .report-header-placeholder { display: none; } */
 
 .report-content-container {
   background-color: var(--white-bg, #ffffff);
@@ -24,64 +16,111 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  min-height: 400px;
-  /* --- УБРАНЫ устаревшие стили из прошлой версии, если были --- */
-  /* flex-grow: 1; */
-  /* margin-left: 20px; */
-  /* margin-right: 20px; */
+  overflow: hidden; /* Может быть полезно, если контент выходит за рамки */
+  /* min-height: 400px; Убрал, чтобы контейнер мог сжиматься, если контента мало */
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.report-period-selector { /* Добавляем центрирование для inline-block элемента внутри */
+.report-period-selector {
   text-align: center;
-  margin-bottom: 25px; /* Оставляем отступ снизу */
+  margin-bottom: 25px;
 }
 
 .report-period-selector p {
-  display: inline-block; /* Чтобы фон облегал текст */
-  background-color: #e9ecef; /* Светло-серый фон (можешь поменять) */
-  padding: 6px 12px;      /* Внутренние отступы (верт./гориз.) */
-  border-radius: 6px;     /* Скругленные углы */
-  color: #495057;         /* Чуть более темный серый текст */
-  font-size: 0.95em;      /* Можно немного уменьшить/увеличить */
-  font-weight: 500;       /* Оставляем полужирный */
-  margin: 0;              /* Убираем стандартные отступы параграфа */
+  display: inline-block;
+  background-color: #e9ecef;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #495057;
+  font-size: 0.95em;
+  font-weight: 500;
+  margin: 0;
 }
-/* --- ИЗМЕНЕНЫ СТИЛИ ДЛЯ КОНТЕЙНЕРА ГРАФИКА --- */
+
 .chart-container {
-  position: relative; /* Необходимо для maintainAspectRatio: false */
-  width: 100%;      /* Занимать всю ширину контейнера */
-  max-width: 700px; /* Ограничим максимальную ширину */
-  margin: 0 auto 30px auto; /* Убрали верхний отступ, добавили авто-margin для центровки, оставили нижний */
-  /* Задаем высоту через аспектное соотношение или min-height */
-  min-height: 250px; /* Минимальная высота */
-  /* Убираем фиксированную высоту из CSS, если она была */
-  /* height: 250px; */
-  /* Убираем flex-shrink */
-  /* flex-shrink: 0; */
-}
-/* --- КОНЕЦ ИЗМЕНЕНИЙ ГРАФИКА --- */
-
-
-/* --- Стили для списка категорий (остаются без изменений) --- */
-.category-summary-list {
+  position: relative;
   width: 100%;
-  /* flex-grow: 1; */ /* Можно убрать, если .report-content-container не flex */
-  overflow-y: auto; /* Оставляем прокрутку, если список длинный */
-  padding-bottom: 0px;
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  min-height: 250px; /* Или желаемая высота графика */
 }
-.category-summary-item { margin-bottom: 18px; }
-.category-info { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-.category-name { font-size: 14px; font-weight: 500; color: var(--dark-text); }
-.category-amount { font-size: 13px; font-weight: 500; color: var(--medium-text); }
-.category-progress-bar-bg { width: 100%; height: 8px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; }
-.category-progress-bar-fg { height: 100%; border-radius: 4px; transition: width 0.5s ease-out; }
-/* --- Конец стилей списка --- */
+
+/* --- НОВЫЕ/ИЗМЕНЕННЫЕ СТИЛИ ДЛЯ СПИСКА КАТЕГОРИЙ В СТИЛЕ FIGMA --- */
+.category-summary-list-figma { /* Изменили имя класса */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Отступ между элементами, как в Figma */
+  margin-top: 20px; /* Отступ от графика */
+}
+
+.category-summary-item-figma {
+  /* Убираем фон и тень с каждого элемента, если фон у report-content-container уже есть */
+  /* background-color: #fff; */
+  /* padding: 12px 15px; */
+  /* border-radius: 8px; */
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+}
+
+.category-header-figma {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px; /* Отступ до прогресс-бара */
+}
+
+.category-name-figma {
+  font-size: 14px; /* Как в Figma */
+  font-weight: 400; /* Обычный вес, как в Figma */
+  color: var(--dark-text, #27272a); /* Цвет из Figma (примерно) */
+  /* text-transform: capitalize; /* Если нужно, чтобы первая буква была заглавной */
+}
+
+.category-amount-figma {
+  font-size: 14px; /* Как в Figma */
+  font-weight: 500; /* Полужирный, как в Figma */
+  color: var(--dark-text, #27272a); /* Цвет из Figma (примерно) */
+}
+
+.progress-bar-container-figma {
+  width: 100%;
+  height: 8px; /* Высота прогресс-бара, как в Figma */
+  background-color: #f3f4f6; /* Цвет фона "пустой" части (светло-серый, как в Figma) */
+  border-radius: 10px; /* Скругление для контейнера, как в Figma */
+  overflow: hidden;
+}
+
+.progress-bar-filled-figma {
+  height: 100%;
+  border-radius: 10px; /* Скругление для заполненной части */
+  /* backgroundColor будет устанавливаться инлайн-стилем */
+  transition: width 0.3s ease-in-out;
+}
+/* --- КОНЕЦ НОВЫХ/ИЗМЕНЕННЫХ СТИЛЕЙ --- */
+
+/* Удаляем старые стили для списка категорий, если они больше не нужны */
+/* .category-summary-item { margin-bottom: 18px; } */
+/* .category-info { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; } */
+/* .category-name { font-size: 14px; font-weight: 500; color: var(--dark-text); } */
+/* .category-amount { font-size: 13px; font-weight: 500; color: var(--medium-text); } */
+/* .category-progress-bar-bg { width: 100%; height: 8px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden; } */
+/* .category-progress-bar-fg { height: 100%; border-radius: 4px; transition: width 0.5s ease-out; } */
 
 
-/* --- Сообщение об отсутствии данных (без изменений) --- */
-.no-data-message { text-align: center; color: var(--medium-text); font-size: 14px; padding: 20px; }
-.chart-container .no-data-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-/* --- Конец стилей сообщения --- */
+.loading-message,
+.error-message,
+.no-data-message {
+  text-align: center;
+  padding: 20px;
+  color: #757575; /* var(--medium-text) */
+  font-size: 14px;
+}
+
+.chart-container .no-data-message { /* Для сообщения внутри контейнера графика */
+  /* position: absolute; */ /* Убрал, чтобы не конфликтовало, если график не рендерится */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  width: 100%; /* Пусть занимает всю ширину, если график пуст */
+}
